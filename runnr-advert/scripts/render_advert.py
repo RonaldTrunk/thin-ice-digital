@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""RUNNR product advert — Horizon-style kinetic + UI demo video."""
+"""Runnr.fyi product advert — Horizon-style kinetic + product UI demo."""
 
 from __future__ import annotations
 
 import math
-import os
 import subprocess
 from pathlib import Path
 
@@ -13,88 +12,93 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
+FONTS = ASSETS / "fonts"
 FRAMES = ROOT / "frames"
 OUTPUT = ROOT / "output"
 
 W, H = 1920, 1080
 FPS = 30
-DURATION = 51.0  # matches narration
+DURATION = 52.0
 TOTAL = int(DURATION * FPS)
 
-BG = (10, 10, 10)
-SURFACE = (26, 26, 26)
-SURFACE2 = (34, 34, 34)
-LIME = (193, 255, 51)
-LIME_DIM = (168, 230, 41)
-WHITE = (255, 255, 255)
-MUTED = (180, 180, 180)
-GRAY = (90, 90, 90)
+BG = (8, 12, 18)
+SURFACE = (12, 17, 24)
+SURFACE2 = (16, 22, 32)
+SURFACE3 = (22, 29, 40)
+GOLD = (201, 169, 110)
+GOLD_LIGHT = (232, 201, 122)
+ACCENT = (0, 229, 160)
+ACCENT2 = (0, 184, 122)
+TEXT = (245, 242, 236)
+TEXT2 = (160, 157, 150)
+TEXT3 = (100, 98, 94)
+RED = (232, 93, 111)
 
-FONT_DIR = "/usr/share/fonts/truetype"
 
-
-def font(name: str, size: int) -> ImageFont.FreeTypeFont:
+def font(kind: str, size: int) -> ImageFont.FreeTypeFont:
+    # Mapped from Google CSS download order in assets/fonts
     paths = {
-        "display": f"{FONT_DIR}/noto/NotoSansDisplay-Bold.ttf",
-        "bold": f"{FONT_DIR}/macos/Inter-Bold.ttf",
-        "semi": f"{FONT_DIR}/macos/Inter-SemiBold.ttf",
-        "med": f"{FONT_DIR}/macos/Inter-Medium.ttf",
-        "reg": f"{FONT_DIR}/macos/Inter-Regular.ttf",
+        "head": FONTS / "font_3.ttf",  # Cormorant 400
+        "head_med": FONTS / "font_4.ttf",  # Cormorant 500
+        "head_semi": FONTS / "font_5.ttf",  # Cormorant 600
+        "head_light": FONTS / "font_2.ttf",  # Cormorant 300
+        "head_italic": FONTS / "font_1.ttf",  # Cormorant italic 400
+        "body": FONTS / "font_7.ttf",  # Jost 400
+        "body_light": FONTS / "font_6.ttf",  # Jost 300
+        "body_med": FONTS / "font_8.ttf",  # Jost 500
     }
-    return ImageFont.truetype(paths[name], size)
+    p = paths[kind]
+    return ImageFont.truetype(str(p), size)
 
 
-def ease_out_cubic(t: float) -> float:
+def ease_out(t: float) -> float:
     t = max(0.0, min(1.0, t))
     return 1 - (1 - t) ** 3
-
-
-def ease_in_out(t: float) -> float:
-    t = max(0.0, min(1.0, t))
-    return 3 * t * t - 2 * t * t * t
-
-
-def lerp(a, b, t):
-    return a + (b - a) * t
 
 
 def clamp01(t: float) -> float:
     return max(0.0, min(1.0, t))
 
 
-def vignette(img: Image.Image, strength: float = 0.45) -> Image.Image:
+def vignette(img: Image.Image, strength: float = 0.55) -> Image.Image:
     arr = np.asarray(img).astype(np.float32)
     yy, xx = np.mgrid[0:H, 0:W]
     cx, cy = W / 2, H / 2
-    r = np.sqrt(((xx - cx) / (W * 0.72)) ** 2 + ((yy - cy) / (H * 0.72)) ** 2)
-    factor = 1 - strength * np.clip(r - 0.35, 0, 1) ** 1.4
+    r = np.sqrt(((xx - cx) / (W * 0.75)) ** 2 + ((yy - cy) / (H * 0.75)) ** 2)
+    factor = 1 - strength * np.clip(r - 0.3, 0, 1) ** 1.3
     arr[..., :3] *= factor[..., None]
     return Image.fromarray(np.clip(arr, 0, 255).astype(np.uint8))
 
 
-def radial_glow(base: Image.Image, color=LIME, y: float = 0.78, alpha: float = 0.12) -> Image.Image:
+def scene_bg(t: float, gold_y: float = 0.0, accent_y: float = 0.85) -> Image.Image:
+    img = Image.new("RGB", (W, H), BG)
     glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     g = ImageDraw.Draw(glow)
-    cx, cy = W // 2, int(H * y)
-    for i, r in enumerate(range(900, 40, -40)):
-        a = int(255 * alpha * (1 - i / 22) ** 2)
-        g.ellipse((cx - r, cy - r // 2, cx + r, cy + r // 2), fill=(*color, a))
-    glow = glow.filter(ImageFilter.GaussianBlur(80))
-    out = base.convert("RGBA")
-    out = Image.alpha_composite(out, glow)
-    return out.convert("RGB")
+    # gold wash top (brand)
+    cx, cy = W // 2, int(H * gold_y - 80)
+    for i, r in enumerate(range(1100, 80, -50)):
+        a = int(28 * (1 - i / 22) ** 2)
+        g.ellipse((cx - r, cy - r // 2, cx + r, cy + r // 2), fill=(*GOLD, a))
+    # accent wash bottom
+    cx2, cy2 = W // 2, int(H * accent_y)
+    for i, r in enumerate(range(800, 40, -40)):
+        a = int(22 * (1 - i / 20) ** 2 * (0.85 + 0.15 * math.sin(t * 1.2)))
+        g.ellipse((cx2 - r, cy2 - r // 2, cx2 + r, cy2 + r // 2), fill=(*ACCENT, a))
+    glow = glow.filter(ImageFilter.GaussianBlur(90))
+    out = Image.alpha_composite(img.convert("RGBA"), glow).convert("RGB")
+    return vignette(out, 0.48)
 
 
-def draw_centered_text(
+def draw_centered(
     draw: ImageDraw.ImageDraw,
     text: str,
     y: int,
     fnt: ImageFont.FreeTypeFont,
-    fill=WHITE,
+    fill=TEXT,
     max_width: int | None = None,
+    tracking: float = 0,
 ):
     if max_width:
-        # simple wrap
         words = text.split()
         lines, cur = [], ""
         for w in words:
@@ -108,179 +112,249 @@ def draw_centered_text(
         if cur:
             lines.append(cur)
     else:
-        lines = [text]
-    line_h = fnt.size + 12
-    total_h = len(lines) * line_h
-    start_y = y - total_h // 2
+        lines = text.split("\n")
+    line_h = int(fnt.size * 1.2)
+    total = len(lines) * line_h
+    start = y - total // 2
     for i, line in enumerate(lines):
         tw = draw.textlength(line, font=fnt)
-        draw.text(((W - tw) / 2, start_y + i * line_h), line, font=fnt, fill=fill)
+        draw.text(((W - tw) / 2, start + i * line_h), line, font=fnt, fill=fill)
 
 
-def rounded_rect(draw, box, radius, fill, outline=None, width=1):
+def rounded(draw, box, radius, fill, outline=None, width=1):
     draw.rounded_rectangle(box, radius=radius, fill=fill, outline=outline, width=width)
 
 
-def phone_frame(base: Image.Image, content: Image.Image, scale: float = 1.0, y_offset: int = 0) -> Image.Image:
-    """Composite a phone mockup centered on base."""
-    pw, ph = int(420 * scale), int(860 * scale)
-    phone = Image.new("RGBA", (pw + 24, ph + 24), (0, 0, 0, 0))
-    d = ImageDraw.Draw(phone)
-    # outer glow
-    d.rounded_rectangle((0, 0, pw + 23, ph + 23), radius=56, fill=(*LIME, 35))
-    phone = phone.filter(ImageFilter.GaussianBlur(18))
-    shell = Image.new("RGBA", (pw + 24, ph + 24), (0, 0, 0, 0))
+def phone_frame(base: Image.Image, content: Image.Image, y_offset: int = 0) -> Image.Image:
+    pw, ph = 430, 880
+    shell = Image.new("RGBA", (pw + 20, ph + 20), (0, 0, 0, 0))
     sd = ImageDraw.Draw(shell)
-    sd.rounded_rectangle((8, 8, pw + 15, ph + 15), radius=48, fill=(20, 20, 20, 255), outline=(*LIME, 90), width=2)
-    # screen
-    content = content.resize((pw - 16, ph - 16), Image.Resampling.LANCZOS)
+    # soft gold rim glow
+    glow = Image.new("RGBA", shell.size, (0, 0, 0, 0))
+    gd = ImageDraw.Draw(glow)
+    gd.rounded_rectangle((0, 0, pw + 19, ph + 19), radius=48, fill=(*GOLD, 40))
+    glow = glow.filter(ImageFilter.GaussianBlur(16))
+    sd.rounded_rectangle((6, 6, pw + 13, ph + 13), radius=42, fill=(8, 12, 18, 255), outline=(*GOLD, 90), width=2)
+
+    content = content.resize((pw - 20, ph - 20), Image.Resampling.LANCZOS)
     mask = Image.new("L", content.size, 0)
-    ImageDraw.Draw(mask).rounded_rectangle((0, 0, content.size[0] - 1, content.size[1] - 1), radius=40, fill=255)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, content.size[0] - 1, content.size[1] - 1), radius=34, fill=255)
     screen = Image.new("RGBA", content.size)
     screen.paste(content.convert("RGBA"), (0, 0))
     screen.putalpha(mask)
     shell.paste(screen, (16, 16), screen)
-    # notch
-    ImageDraw.Draw(shell).rounded_rectangle(
-        (pw // 2 - 40, 22, pw // 2 + 56, 38), radius=8, fill=(10, 10, 10, 255)
-    )
+    # status bar
+    ImageDraw.Draw(shell).text((36, 28), "9:41", font=font("body_med", 13), fill=TEXT)
+    ImageDraw.Draw(shell).rounded_rectangle((pw // 2 - 36, 24, pw // 2 + 52, 36), radius=6, fill=(10, 10, 10, 255))
+
     composed = base.convert("RGBA")
     x = (W - shell.width) // 2
     y = (H - shell.height) // 2 + y_offset
-    composed.alpha_composite(phone, (x - 4, y - 4))
+    composed.alpha_composite(glow, (x - 2, y - 2))
     composed.alpha_composite(shell, (x, y))
     return composed.convert("RGB")
 
 
-def make_chat_screen(
-    messages: list[tuple[str, str]],
-    progress: float,
-    plan_card: dict | None = None,
-) -> Image.Image:
-    """Build phone chat UI. messages: (role, text) role in user|coach."""
-    screen = Image.new("RGB", (404, 844), BG)
+def app_header(d: ImageDraw.ImageDraw, w: int):
+    d.rectangle((0, 0, w, 72), fill=(8, 12, 18))
+    d.rectangle((18, 26, 20, 48), fill=GOLD)  # brand mark
+    d.text((30, 22), "runnr", font=font("head_italic", 28), fill=TEXT)
+    rounded(d, (w - 118, 22, w - 18, 46), 12, (40, 34, 24), outline=GOLD, width=1)
+    d.text((w - 108, 26), "NOVICE", font=font("body_med", 11), fill=GOLD)
+
+
+def app_nav(d: ImageDraw.ImageDraw, w: int, h: int, active: int = 0):
+    d.rectangle((0, h - 70, w, h), fill=SURFACE)
+    labels = ["Home", "Size", "Journal", "Coach", "Markets"]
+    for i, lab in enumerate(labels):
+        cx = 20 + i * (w // 5) + 18
+        col = ACCENT if i == active else TEXT3
+        d.ellipse((cx + 12, h - 54, cx + 22, h - 44), fill=col)
+        d.text((cx, h - 36), lab, font=font("body_med", 9), fill=col)
+
+
+def make_sizer_screen(progress: float) -> Image.Image:
+    w, h = 410, 860
+    screen = Image.new("RGB", (w, h), BG)
     d = ImageDraw.Draw(screen)
-    # header
-    d.rectangle((0, 0, 404, 96), fill=SURFACE)
-    logo = Image.open(ASSETS / "runnr-logo.png").convert("RGBA").resize((28, 28))
-    screen.paste(logo, (20, 34), logo)
-    d.text((58, 30), "RUNNR", font=font("bold", 22), fill=WHITE)
-    d.text((58, 56), "Your AI Coach", font=font("med", 14), fill=LIME)
+    app_header(d, w)
 
-    visible = max(1, int(len(messages) * clamp01(progress) + 0.01))
-    y = 120
-    f_body = font("reg", 16)
-    for i, (role, text) in enumerate(messages[:visible]):
-        # type-on for last message
-        show = text
-        if i == visible - 1 and progress < 1:
-            frac = (progress * len(messages)) % 1
-            show = text[: max(1, int(len(text) * ease_out_cubic(frac)))]
+    d.text((18, 90), "SHARES POSITION SIZER", font=font("body_med", 10), fill=GOLD)
+    # Baron preset pill
+    rounded(d, (18, 118, 200, 148), 14, (40, 34, 24), outline=GOLD, width=1)
+    d.text((30, 124), "Baron Preset  ·  1% risk", font=font("body", 12), fill=GOLD_LIGHT)
 
-        # wrap
-        words = show.split(" ")
-        lines, cur = [], ""
-        max_w = 240
-        for w in words:
-            trial = f"{cur} {w}".strip()
-            if d.textlength(trial, font=f_body) <= max_w:
-                cur = trial
-            else:
-                lines.append(cur)
-                cur = w
-        if cur:
-            lines.append(cur)
-        bh = 20 + len(lines) * 22
-        if role == "user":
-            x0 = 404 - 28 - 260
-            rounded_rect(d, (x0, y, x0 + 260, y + bh), 16, (40, 55, 18))
-            d.rounded_rectangle((x0, y, x0 + 260, y + bh), radius=16, outline=(*LIME, ), width=1)
-            for li, line in enumerate(lines):
-                d.text((x0 + 14, y + 10 + li * 22), line, font=f_body, fill=WHITE)
-        else:
-            x0 = 20
-            # avatar
-            d.ellipse((x0, y, x0 + 28, y + 28), fill=LIME)
-            d.text((x0 + 8, y + 4), "R", font=font("bold", 14), fill=BG)
-            rounded_rect(d, (x0 + 36, y, x0 + 36 + 260, y + bh), 16, SURFACE2)
-            for li, line in enumerate(lines):
-                d.text((x0 + 50, y + 10 + li * 22), line, font=f_body, fill=WHITE)
-        y += bh + 16
-
-    if plan_card and progress > 0.55:
-        alpha_t = ease_out_cubic((progress - 0.55) / 0.45)
-        cy = y + 8
-        rounded_rect(d, (20, cy, 384, cy + 78), 16, (30, 40, 12))
-        d.rounded_rectangle((20, cy, 384, cy + 78), radius=16, outline=LIME, width=1)
-        d.ellipse((36, cy + 20, 68, cy + 52), fill=LIME)
-        d.text((78, cy + 18), plan_card["title"], font=font("semi", 16), fill=WHITE)
-        d.text((78, cy + 44), plan_card["sub"], font=font("reg", 13), fill=MUTED)
-        d.text((320, cy + 30), "View", font=font("semi", 14), fill=LIME)
-        # fade-in via overlay
-        if alpha_t < 1:
-            overlay = Image.new("RGB", screen.size, BG)
-            screen = Image.blend(overlay, screen, 0.55 + 0.45 * alpha_t)
-
-    # bottom nav
-    d.rectangle((0, 780, 404, 844), fill=SURFACE)
-    for i, label in enumerate(["Today", "Coach", "Stats", "You"]):
-        cx = 50 + i * 90
-        col = LIME if i == 1 else GRAY
-        d.ellipse((cx, 798, cx + 10, 808), fill=col)
-        d.text((cx - 10, 814), label, font=font("reg", 11), fill=col)
-
-    return screen
-
-
-def make_week_plan_screen(progress: float) -> Image.Image:
-    screen = Image.new("RGB", (404, 844), BG)
-    d = ImageDraw.Draw(screen)
-    d.rectangle((0, 0, 404, 88), fill=SURFACE)
-    d.text((24, 28), "This week", font=font("bold", 24), fill=WHITE)
-    d.text((24, 58), "Built for your 10K · 3 days", font=font("reg", 13), fill=LIME)
-
-    days = [
-        ("Mon", "Easy 4 mi", "Recovery pace", True),
-        ("Wed", "Intervals 5x400", "Build speed", True),
-        ("Fri", "Rest / walk", "Travel day", False),
-        ("Sat", "Long 6 mi", "Hotel treadmill OK", True),
-        ("Sun", "Rest", "Recover", False),
+    fields = [
+        ("TICKER", "NVDA"),
+        ("ENTRY", "128.40"),
+        ("STOP LOSS", "124.10"),
+        ("TARGET", "136.90"),
     ]
-    y = 110
-    n = max(1, int(math.ceil(len(days) * clamp01(0.15 + 0.85 * progress))))
-    for i, (day, title, sub, run) in enumerate(days[:n]):
-        rounded_rect(d, (20, y, 384, y + 78), 16, SURFACE2)
-        d.ellipse((34, y + 20, 66, y + 52), fill=LIME if run else (60, 60, 60))
-        d.text((42, y + 26), day[:1], font=font("bold", 15), fill=BG if run else MUTED)
-        d.text((84, y + 18), title, font=font("semi", 16), fill=WHITE)
-        d.text((84, y + 44), sub, font=font("reg", 12), fill=MUTED)
-        if run:
-            d.text((300, y + 30), "Ready", font=font("semi", 12), fill=LIME)
-        y += 90
+    y = 168
+    shown = max(1, int(len(fields) * clamp01(progress * 1.2) + 0.01))
+    for label, val in fields[:shown]:
+        d.text((22, y), label, font=font("body_med", 9), fill=GOLD)
+        rounded(d, (18, y + 18, w - 18, y + 58), 6, SURFACE2, outline=(60, 50, 35), width=1)
+        d.text((30, y + 28), val, font=font("head", 20), fill=TEXT)
+        y += 72
 
+    if progress > 0.55:
+        a = ease_out((progress - 0.55) / 0.45)
+        box_y = y + 8
+        rounded(d, (18, box_y, w - 18, box_y + 150), 12, (28, 36, 28), outline=GOLD, width=1)
+        d.text((w // 2 - 40, box_y + 18), "MAX SHARES", font=font("body_med", 10), fill=TEXT3)
+        d.text((w // 2 - 70, box_y + 40), "232", font=font("head_med", 48), fill=ACCENT)
+        # sub metrics
+        for i, (lab, val) in enumerate([("RISK", "€100"), ("R:R", "2.0"), ("REWARD", "€200")]):
+            x0 = 40 + i * 120
+            d.text((x0, box_y + 100), lab, font=font("body_med", 9), fill=TEXT3)
+            d.text((x0, box_y + 116), val, font=font("head", 18), fill=TEXT)
+
+    app_nav(d, w, h, active=1)
     return screen
 
 
-def scene_bg(t: float, glow_y: float = 0.85) -> Image.Image:
-    img = Image.new("RGB", (W, H), BG)
-    img = radial_glow(img, LIME, y=glow_y, alpha=0.10 + 0.02 * math.sin(t * 1.4))
-    return vignette(img, 0.5)
+def make_discipline_screen(progress: float) -> Image.Image:
+    w, h = 410, 860
+    screen = Image.new("RGB", (w, h), BG)
+    d = ImageDraw.Draw(screen)
+    app_header(d, w)
+
+    d.text((18, 90), "DISCIPLINE SCORE", font=font("body_med", 10), fill=GOLD)
+    # ring
+    cx, cy, r = w // 2, 240, 78
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), outline=SURFACE3, width=10)
+    # arc approx with chord segments based on progress
+    score = int(82 * clamp01(progress))
+    for ang in range(-90, int(-90 + 360 * score / 100), 4):
+        rad1 = math.radians(ang)
+        rad2 = math.radians(ang + 5)
+        x1 = cx + int((r - 2) * math.cos(rad1))
+        y1 = cy + int((r - 2) * math.sin(rad1))
+        x2 = cx + int((r - 2) * math.cos(rad2))
+        y2 = cy + int((r - 2) * math.sin(rad2))
+        d.line([(x1, y1), (x2, y2)], fill=ACCENT, width=10)
+    d.text((cx - 36, cy - 28), f"{score}%", font=font("head_med", 42), fill=TEXT)
+    d.text((cx - 48, cy + 22), "Stop Discipline", font=font("body", 13), fill=TEXT2)
+
+    # metric grid
+    metrics = [
+        ("Stop", "82%"),
+        ("Size", "91%"),
+        ("Profit Factor", "1.8"),
+        ("Win Rate", "58%"),
+    ]
+    y = 360
+    for i, (lab, val) in enumerate(metrics):
+        if progress < 0.25 + i * 0.15:
+            continue
+        x0 = 18 if i % 2 == 0 else w // 2 + 4
+        if i == 2:
+            y = 460
+        if i == 3:
+            y = 460
+        yy = 360 if i < 2 else 470
+        xx = 18 if i % 2 == 0 else w // 2 + 4
+        rounded(d, (xx, yy, xx + w // 2 - 22, yy + 90), 12, SURFACE, outline=(50, 42, 30), width=1)
+        d.text((xx + 16, yy + 18), lab.upper(), font=font("body_med", 9), fill=GOLD)
+        d.text((xx + 16, yy + 40), val, font=font("head_med", 32), fill=TEXT if i > 0 else ACCENT)
+
+    app_nav(d, w, h, active=0)
+    return screen
 
 
-def word_blasts(draw, words: list[str], t_local: float, color=LIME):
-    """Kinetic single/few word overlays like Horizon."""
-    fnt = font("display", 96)
-    # cycle words
-    if not words:
-        return
-    idx = min(len(words) - 1, int(t_local * len(words)))
-    word = words[idx]
-    frag = (t_local * len(words)) % 1
-    alpha = ease_out_cubic(min(1, frag * 3)) if frag < 0.85 else ease_out_cubic((1 - frag) / 0.15)
-    # can't easily do alpha on text with RGB; approximate by blending color
-    col = tuple(int(c * (0.35 + 0.65 * alpha)) for c in color)
-    tw = draw.textlength(word, font=fnt)
-    draw.text(((W - tw) / 2, H // 2 - 60), word, font=fnt, fill=col)
+def make_coach_screen(progress: float, prompt: str, answer_lines: list[str]) -> Image.Image:
+    w, h = 410, 860
+    screen = Image.new("RGB", (w, h), BG)
+    d = ImageDraw.Draw(screen)
+    app_header(d, w)
+
+    d.text((18, 90), "COACH INSIGHTS", font=font("body_med", 10), fill=GOLD)
+    d.text((18, 118), "Ask about patterns in your own trade data", font=font("body_light", 13), fill=TEXT2)
+
+    # user chip
+    rounded(d, (60, 170, w - 18, 230), 14, SURFACE3)
+    show = prompt[: max(1, int(len(prompt) * ease_out(min(1, progress * 2))))]
+    # wrap
+    words = show.split()
+    lines, cur = [], ""
+    for word in words:
+        trial = f"{cur} {word}".strip()
+        if d.textlength(trial, font=font("body", 14)) <= 280:
+            cur = trial
+        else:
+            lines.append(cur)
+            cur = word
+    if cur:
+        lines.append(cur)
+    for i, line in enumerate(lines[:2]):
+        d.text((76, 182 + i * 20), line, font=font("body", 14), fill=TEXT)
+
+    if progress > 0.4:
+        rounded(d, (18, 250, w - 18, 520), 12, SURFACE, outline=(50, 42, 30), width=1)
+        d.text((32, 268), "WEEKLY · AI", font=font("body_med", 9), fill=ACCENT)
+        ans_progress = ease_out((progress - 0.4) / 0.6)
+        n = max(1, int(len(answer_lines) * ans_progress + 0.01))
+        yy = 300
+        for line in answer_lines[:n]:
+            # simple wrap
+            words = line.split()
+            cur = ""
+            for word in words:
+                trial = f"{cur} {word}".strip()
+                if d.textlength(trial, font=font("body_light", 15)) <= 340:
+                    cur = trial
+                else:
+                    d.text((32, yy), cur, font=font("body_light", 15), fill=TEXT2)
+                    yy += 24
+                    cur = word
+            if cur:
+                d.text((32, yy), cur, font=font("body_light", 15), fill=TEXT2)
+                yy += 28
+
+    # projection strip
+    if progress > 0.75:
+        rounded(d, (18, 540, w - 18, 680), 12, (28, 22, 16), outline=GOLD, width=1)
+        d.text((32, 556), "MONTHLY EQUITY PROJECTION", font=font("body_med", 9), fill=GOLD)
+        d.text((40, 590), "-€180", font=font("head_med", 28), fill=RED)
+        d.text((40, 628), "ACTUAL", font=font("body_med", 10), fill=TEXT3)
+        d.text((210, 590), "+€1,240", font=font("head_med", 28), fill=ACCENT)
+        d.text((210, 628), "WITH RUNNR RULES", font=font("body_med", 10), fill=TEXT3)
+
+    app_nav(d, w, h, active=3)
+    return screen
+
+
+def make_journal_impact(progress: float) -> Image.Image:
+    w, h = 410, 860
+    screen = Image.new("RGB", (w, h), BG)
+    d = ImageDraw.Draw(screen)
+    app_header(d, w)
+
+    d.text((18, 90), "DISCIPLINE IMPACT", font=font("body_med", 10), fill=GOLD)
+    d.text((18, 120), "What leaks cost you", font=font("head_italic", 28), fill=TEXT)
+
+    cards = [
+        ("+€2,503", "Disciplined P&L", ACCENT),
+        ("-€190", "Undisciplined P&L", RED),
+        ("82%", "Stop Confirmed", GOLD_LIGHT),
+        ("91%", "Correctly Sized", GOLD_LIGHT),
+    ]
+    y = 180
+    for i, (val, lab, col) in enumerate(cards):
+        if progress < 0.15 + i * 0.18:
+            break
+        rounded(d, (18, y, w - 18, y + 88), 12, SURFACE, outline=(50, 42, 30), width=1)
+        d.text((34, y + 18), lab.upper(), font=font("body_med", 10), fill=GOLD)
+        d.text((34, y + 42), val, font=font("head_med", 32), fill=col)
+        y += 100
+
+    app_nav(d, w, h, active=2)
+    return screen
+
+
+def caption(draw, text: str):
+    draw_centered(draw, text, H - 78, font("body_med", 28), TEXT)
 
 
 def render_frame(i: int) -> Image.Image:
@@ -288,188 +362,135 @@ def render_frame(i: int) -> Image.Image:
     img = scene_bg(t)
     draw = ImageDraw.Draw(img)
 
-    # --- SCENE TIMELINE ---
     if t < 3.4:
-        #hasn't changed
         words = ["HASN'T", "CHANGED", "20 YEARS"]
-        word_blasts(draw, words, t / 3.4, LIME)
-        draw_centered_text(draw, "The running app workflow", H // 2 + 80, font("med", 28), MUTED)
+        idx = min(len(words) - 1, int((t / 3.4) * len(words)))
+        word = words[idx]
+        draw_centered(draw, word, H // 2 - 30, font("head_semi", 96), GOLD)
+        draw_centered(draw, "The trading workflow", H // 2 + 70, font("body", 26), TEXT2)
 
-    elif t < 5.1:
-        local = (t - 3.4) / 1.7
-        s = ease_out_cubic(local)
-        fnt = font("display", int(lerp(72, 120, s)))
-        draw_centered_text(draw, "Today", H // 2 - 20, fnt, WHITE)
-        draw_centered_text(draw, "we're changing that", H // 2 + 70, font("med", 32), MUTED)
+    elif t < 5.04:
+        draw_centered(draw, "Today", H // 2 - 30, font("head_italic", 110), TEXT)
+        draw_centered(draw, "we're changing that", H // 2 + 70, font("body", 28), TEXT2)
 
-    elif t < 7.0:
-        local = (t - 5.1) / 1.9
-        s = ease_out_cubic(local)
-        logo = Image.open(ASSETS / "runnr-logo.png").convert("RGBA")
-        size = int(lerp(80, 160, s))
-        logo = logo.resize((size, size))
-        # glow behind logo
+    elif t < 6.4:
+        local = ease_out((t - 5.04) / 1.36)
+        icon = Image.open(ASSETS / "runnr-icon.png").convert("RGBA").resize((140, 140))
         glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         gd = ImageDraw.Draw(glow)
-        cx, cy = W // 2, H // 2 - 40
-        gd.ellipse((cx - 120, cy - 120, cx + 120, cy + 120), fill=(*LIME, int(60 * s)))
-        glow = glow.filter(ImageFilter.GaussianBlur(40))
+        cx, cy = W // 2, H // 2 - 50
+        gd.ellipse((cx - 100, cy - 100, cx + 100, cy + 100), fill=(*ACCENT, int(50 * local)))
+        glow = glow.filter(ImageFilter.GaussianBlur(36))
         img = Image.alpha_composite(img.convert("RGBA"), glow).convert("RGB")
+        img.paste(icon, (cx - 70, cy - 70), icon)
         draw = ImageDraw.Draw(img)
-        img.paste(logo, (cx - size // 2, cy - size // 2), logo)
+        draw_centered(draw, "runnr", H // 2 + 90, font("head_italic", 72), TEXT)
+
+    elif t < 9.68:
+        draw_centered(draw, "The discipline coach", H // 2 - 50, font("head", 56), TEXT, max_width=1400)
+        draw_centered(draw, "for traders who already know their edge", H // 2 + 40, font("body", 28), GOLD_LIGHT, max_width=1200)
+
+    elif t < 11.27:
+        draw_centered(draw, "Let me show you how it works.", H // 2, font("head", 48), TEXT, max_width=1400)
+
+    elif t < 16.86:
+        local = (t - 11.27) / 5.59
+        screen = make_sizer_screen(local)
+        img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        fnt = font("display", int(72 * s + 1))
-        tw = draw.textlength("RUNNR", font=fnt)
-        draw.text(((W - tw) / 2, cy + size // 2 + 20), "RUNNR", font=fnt, fill=WHITE)
+        caption(draw, "risk one percent · stop set · 2R")
 
-    elif t < 10.7:
-        local = (t - 7.0) / 3.7
-        draw_centered_text(draw, "Your personal AI running coach.", H // 2 - 40, font("display", 52), WHITE, max_width=1400)
-        c = LIME if local > 0.35 else MUTED
-        draw_centered_text(draw, "Built for real life.", H // 2 + 50, font("semi", 36), c)
-
-    elif t < 12.3:
-        draw_centered_text(draw, "Let me show you how it works.", H // 2, font("display", 48), WHITE, max_width=1400)
-
-    elif t < 14.57:
-        # empty chat intro
-        screen = make_chat_screen([], 0)
-        # input prompt overlay on dark
-        img = phone_frame(img, screen, scale=1.0, y_offset=20)
+    elif t < 20.75:
+        local = (t - 16.86) / 3.89
+        screen = make_discipline_screen(local)
+        img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "telling your coach", H - 90, font("semi", 36), WHITE)
+        caption(draw, "scores the discipline — not just P&L")
 
-    elif t < 17.62:
-        local = (t - 14.57) / 3.05
-        msgs = [
-            ("coach", "Hey! How's your knee feeling today?"),
-            ("user", "A bit sore from yesterday, but manageable!"),
-            ("coach", "Got it. I've adjusted today's run to an easy 3 miles with walking breaks."),
-        ]
-        screen = make_chat_screen(
-            msgs,
+    elif t < 23.79:
+        local = (t - 20.75) / 3.04
+        screen = make_coach_screen(
             local,
-            plan_card={"title": "Today's Run Updated", "sub": "Easy 3mi · Recovery pace"},
+            "Why do I cut winners early?",
+            [
+                "You exit at +0.8R on winning NVDA setups — your plan says 2R.",
+                "Cutting winners early cost €640 this month.",
+            ],
         )
-        img = phone_frame(scene_bg(t, 0.9), screen, 1.0, 10)
+        img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "my knee's a bit sore", H - 80, font("semi", 32), WHITE)
+        caption(draw, "why do I cut winners early?")
 
-    elif t < 22.07:
-        local = (t - 17.62) / 4.45
-        msgs = [
-            ("user", "I have a 10K in 8 weeks and can only run 3 days."),
-            ("coach", "Perfect. Building a 3-day plan around your race — no filler miles."),
-        ]
-        screen = make_chat_screen(msgs, min(1, local * 1.4))
-        if local > 0.45:
-            plan = make_week_plan_screen((local - 0.45) / 0.55)
-            # crossfade-ish: show plan
-            screen = plan
-        img = phone_frame(scene_bg(t, 0.9), screen, 1.0, 10)
-        draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "10K in eight weeks", H - 80, font("semi", 32), WHITE)
-
-    elif t < 25.83:
-        local = (t - 22.07) / 3.76
-        msgs = [
-            ("user", "Traveling this weekend — hotel gym only."),
-            ("coach", "Swapped your long run for a treadmill session. Same stimulus, flexible."),
-        ]
-        screen = make_chat_screen(
-            msgs,
+    elif t < 27.89:
+        local = (t - 23.79) / 4.1
+        screen = make_coach_screen(
             local,
-            plan_card={"title": "Weekend Adjusted", "sub": "Treadmill long · 45 min"},
+            "P&L if I followed rules 100%?",
+            [
+                "If every trade followed Runnr rules this month:",
+            ],
         )
-        img = phone_frame(scene_bg(t, 0.9), screen, 1.0, 10)
+        img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "hotel gym only", H - 80, font("semi", 32), WHITE)
+        caption(draw, "rules on every trade")
 
-    elif t < 31.38:
-        local = (t - 25.83) / 5.55
-        # agent working montage — steps
-        img = scene_bg(t, 0.75)
+    elif t < 33.37:
+        local = (t - 27.89) / 5.48
+        screen = make_journal_impact(local)
+        img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "RUNNR goes to work", 180, font("display", 48), WHITE)
-        steps = [
-            "Syncs your runs automatically",
-            "Adapts the plan to how you feel",
-            "Explains the next session in plain language",
-        ]
-        for i, step in enumerate(steps):
-            appear = ease_out_cubic(clamp01((local - i * 0.22) / 0.25))
-            if appear <= 0:
-                continue
-            y = 320 + i * 110
-            box = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-            bd = ImageDraw.Draw(box)
-            x0 = int(lerp(W // 2 - 100, W // 2 - 420, appear))
-            bd.rounded_rectangle((x0, y, x0 + 840, y + 84), radius=20, fill=(*SURFACE2, int(230 * appear)))
-            bd.ellipse((x0 + 28, y + 26, x0 + 60, y + 58), fill=(*LIME, int(255 * appear)))
-            bd.text((x0 + 80, y + 26), step, font=font("semi", 28), fill=(*WHITE, int(255 * appear)))
-            img = Image.alpha_composite(img.convert("RGBA"), box).convert("RGB")
-        draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "exactly what to do next", H - 90, font("semi", 28), MUTED)
+        caption(draw, "money discipline would have saved")
 
-    elif t < 35.44:
-        local = (t - 31.38) / 4.06
+    elif t < 38.38:
+        local = (t - 33.37) / 5.01
         phrases = [
-            (0.0, "No metrics to track."),
-            (0.35, "No data to analyze."),
-            (0.70, "Just run."),
+            (0.0, "Stop confirmation."),
+            (0.28, "Size discipline."),
+            (0.52, "Profit factor."),
+            (0.76, "All in one place."),
         ]
         current = phrases[0][1]
         for start, text in phrases:
             if local >= start:
                 current = text
-        big = current == "Just run."
-        fnt = font("display", 92 if big else 56)
-        col = LIME if big else WHITE
-        draw_centered_text(draw, current, H // 2, fnt, col)
+        col = ACCENT if current.startswith("All") else TEXT
+        draw_centered(draw, current, H // 2, font("head", 64 if not current.startswith("All") else 56), col)
 
-    elif t < 40.86:
-        local = (t - 35.44) / 5.42
-        draw_centered_text(draw, "Imagine", int(H * 0.38), font("display", 100), WHITE)
-        sub = "a coach that flexes around your life"
-        alpha = ease_out_cubic(clamp01((local - 0.25) / 0.4))
-        col = tuple(int(c * alpha) for c in LIME) if alpha > 0 else (0, 0, 0)
-        if alpha > 0:
-            draw_centered_text(draw, sub, int(H * 0.55), font("semi", 36), col if alpha > 0.5 else MUTED, max_width=1200)
+    elif t < 42.11:
+        local = (t - 38.38) / 3.73
+        draw_centered(draw, "Your edge works.", H // 2 - 50, font("head", 56), TEXT)
+        if local > 0.35:
+            draw_centered(draw, "Your discipline doesn't —", H // 2 + 20, font("head", 40), TEXT2)
+            draw_centered(draw, "until it does.", H // 2 + 80, font("head_italic", 44), ACCENT)
 
-    elif t < 43.63:
-        local = (t - 40.86) / 2.77
-        draw_centered_text(draw, "Version one.", H // 2 - 40, font("display", 64), WHITE)
-        if local > 0.4:
-            draw_centered_text(draw, "It's just the beginning.", H // 2 + 50, font("semi", 36), LIME)
+    elif t < 44.88:
+        draw_centered(draw, "Version one.", H // 2 - 30, font("head", 64), TEXT)
+        draw_centered(draw, "It's just the beginning.", H // 2 + 50, font("body", 28), GOLD_LIGHT)
 
-    elif t < 48.35:
-        draw_centered_text(
+    elif t < 49.47:
+        draw_centered(
             draw,
-            "Early access for runners who want a coach —\nnot another spreadsheet.",
+            "Institutional habits.\nWithout the institutional stack.",
             H // 2,
-            font("display", 44),
-            WHITE,
+            font("head", 48),
+            TEXT,
             max_width=1500,
         )
 
     else:
-        # CTA
-        local = (t - 48.35) / (DURATION - 48.35)
-        s = ease_out_cubic(local)
-        logo = Image.open(ASSETS / "runnr-logo.png").convert("RGBA").resize((96, 96))
-        img.paste(logo, (W // 2 - 48, H // 2 - 180), logo)
+        icon = Image.open(ASSETS / "runnr-icon.png").convert("RGBA").resize((88, 88))
+        img.paste(icon, (W // 2 - 44, H // 2 - 200), icon)
         draw = ImageDraw.Draw(img)
-        draw_centered_text(draw, "Get notified", H // 2 - 40, font("display", 56), WHITE)
-        # CTA pill
-        label = "runnrapp.com"
-        fnt = font("bold", 28)
+        draw_centered(draw, "Get started", H // 2 - 60, font("head", 56), TEXT)
+        label = "runnr.fyi"
+        fnt = font("body_med", 26)
         tw = draw.textlength(label, font=fnt)
-        pw, ph = tw + 64, 64
+        pw, ph = tw + 64, 58
         x0 = (W - pw) / 2
-        y0 = H // 2 + 40
-        rounded_rect(draw, (x0, y0, x0 + pw, y0 + ph), 18, LIME)
-        draw.text((x0 + 32, y0 + 16), label, font=fnt, fill=BG)
-        draw_centered_text(draw, "Coming soon to iOS", H // 2 + 150, font("med", 24), MUTED)
+        y0 = H // 2 + 20
+        rounded(draw, (x0, y0, x0 + pw, y0 + ph), 8, ACCENT)
+        draw.text((x0 + 32, y0 + 14), label, font=fnt, fill=BG)
+        draw_centered(draw, "Discipline over dopamine", H // 2 + 130, font("body", 22), TEXT2)
 
     return img
 
@@ -477,60 +498,49 @@ def render_frame(i: int) -> Image.Image:
 def main():
     FRAMES.mkdir(parents=True, exist_ok=True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
+    # clear old frames
+    for p in FRAMES.glob("*.jpg"):
+        p.unlink()
 
     print(f"Rendering {TOTAL} frames @ {FPS}fps ({DURATION}s)…")
     for i in range(TOTAL):
-        frame = render_frame(i)
-        frame.save(FRAMES / f"frame_{i:05d}.jpg", quality=92, optimize=True)
-        if i % 60 == 0:
-            print(f"  {i}/{TOTAL} ({100 * i / TOTAL:.0f}%)")
+        render_frame(i).save(FRAMES / f"frame_{i:05d}.jpg", quality=92)
+        if i % 90 == 0:
+            print(f"  {i}/{TOTAL}")
 
-    print("Encoding video…")
     silent = OUTPUT / "runnr-advert-silent.mp4"
     final = OUTPUT / "runnr-advert.mp4"
     subprocess.check_call(
         [
-            "ffmpeg",
-            "-y",
-            "-framerate",
-            str(FPS),
-            "-i",
-            str(FRAMES / "frame_%05d.jpg"),
-            "-c:v",
-            "libx264",
-            "-pix_fmt",
-            "yuv420p",
-            "-crf",
-            "18",
-            "-preset",
-            "medium",
+            "ffmpeg", "-y", "-framerate", str(FPS),
+            "-i", str(FRAMES / "frame_%05d.jpg"),
+            "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-preset", "medium",
             str(silent),
         ]
     )
     subprocess.check_call(
         [
-            "ffmpeg",
-            "-y",
-            "-i",
-            str(silent),
-            "-i",
-            str(ASSETS / "narration.mp3"),
-            "-c:v",
-            "copy",
-            "-c:a",
-            "aac",
-            "-b:a",
-            "192k",
-            "-shortest",
+            "ffmpeg", "-y",
+            "-i", str(silent),
+            "-i", str(ASSETS / "narration.mp3"),
+            "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest",
             str(final),
         ]
     )
-    # artifacts copy
+    vertical = OUTPUT / "runnr-advert-9x16.mp4"
+    subprocess.check_call(
+        [
+            "ffmpeg", "-y", "-i", str(final),
+            "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920",
+            "-c:v", "libx264", "-crf", "20", "-c:a", "aac", "-b:a", "160k",
+            str(vertical),
+        ]
+    )
     artifacts = Path("/opt/cursor/artifacts")
     artifacts.mkdir(parents=True, exist_ok=True)
     subprocess.check_call(["cp", str(final), str(artifacts / "runnr-advert.mp4")])
-    # poster
-    Image.open(FRAMES / "frame_00180.jpg").save(artifacts / "runnr-advert-poster.jpg", quality=90)
+    subprocess.check_call(["cp", str(vertical), str(artifacts / "runnr-advert-9x16.mp4")])
+    Image.open(FRAMES / f"frame_{int(6.1*FPS):05d}.jpg").save(artifacts / "runnr-advert-poster.jpg", quality=90)
     print("Done →", final)
 
 

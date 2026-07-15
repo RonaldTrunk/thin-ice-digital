@@ -4,4 +4,4 @@ Creative and product assets for Thin Ice Digital.
 
 ## Projects
 
-- [`runnr-advert/`](./runnr-advert) — Horizon-style launch video for RUNNR (AI running coach)
+- [`runnr-advert/`](./runnr-advert) — Horizon-style launch video for [Runnr](https://runnr.fyi/) (trading discipline coach)
