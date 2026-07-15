@@ -1,0 +1,5 @@
+frames/
+preview/
+output/*-silent.mp4
+__pycache__/
+*.pyc
