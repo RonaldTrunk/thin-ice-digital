@@ -2,12 +2,12 @@ The trading workflow hasn't changed for the last twenty years.
 Today, we're changing that. Introducing Runnr.
 The discipline coach for traders who already know their edge.
 Let me show you how it works.
-You size the trade to your rules — risk one percent, stop set, reward at two R.
-You log it. Runnr scores the discipline, not just the P and L.
-Or ask the coach: why do I cut winners early?
-Or: what would my month look like if I followed the rules on every trade?
-Runnr pulls the journal, flags the leaks, and shows the money discipline would have saved.
-Stop confirmation. Size discipline. Profit factor. All in one place.
+You size every trade to your rules — one percent risk, stop set, reward at two R. Instantly.
+Connect your broker once. Pull real trades straight into the journal — Alpaca today, CSV from anywhere, more coming.
+Build a watchlist that actually looks like conviction — levels, thesis, price alerts when you're near the risk band.
+You log the trade. Runnr scores the discipline, not just the P and L — stop confirmation, size discipline, the lot.
+Ask the coach: why do I cut winners early? Or what would this month look like if I followed the rules on every trade?
+It flags the leaks. It shows the money discipline would have saved. Equity curve, heat map, institutional stats — all in one place.
 Your edge works. Your discipline doesn't — until it does.
 This is just version one. It's just the beginning.
 Built for runners who want institutional habits without the institutional stack.

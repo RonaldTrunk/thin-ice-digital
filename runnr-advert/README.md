@@ -6,9 +6,9 @@ Horizon-style product launch advert for [Runnr](https://runnr.fyi/) — the disc
 
 | File | Description |
 |------|-------------|
-| `output/runnr-advert.mp4` | Final ~52s · 1920×1080 · narration + motion graphics |
+| `output/runnr-advert.mp4` | Final ~82s · 1920×1080 · narration + motion graphics |
 | `output/runnr-advert-9x16.mp4` | Vertical crop for Stories / Reels |
-| `assets/narration.mp3` | Voiceover (Edge TTS · AndrewNeural) |
+| `assets/narration.mp3` | Voiceover (Edge TTS · en-GB-RyanNeural) |
 | `assets/narration.vtt` | Timed captions |
 | `scripts/narration.txt` | Script |
 | `scripts/render_advert.py` | Regenerator |
@@ -19,8 +19,8 @@ Same arc as [Horizon’s launch ad](https://x.com/horizon_trade_x/status/2077432
 
 1. **Hook** — trading workflow hasn’t changed  
 2. **Intro** — runnr logo + “discipline coach”  
-3. **Product demo** — position sizer → discipline score → coach → P&L impact  
-4. **Payoff** — stop / size / profit factor · your edge works  
+3. **Product demo** — sizer → broker sync → watchlist → discipline score → coach → P&L impact → equity/heatmap  
+4. **Payoff** — your edge works · your discipline doesn’t — until it does  
 5. **CTA** — runnr.fyi  
 
 ## Suggested X / social copy
