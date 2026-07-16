@@ -6,9 +6,9 @@ Horizon-style product launch advert for [Runnr](https://runnr.fyi/) — the disc
 
 | File | Description |
 |------|-------------|
-| `output/runnr-advert.mp4` | Final ~82s · 1920×1080 · narration + motion graphics |
-| `output/runnr-advert-9x16.mp4` | Vertical crop for Stories / Reels |
-| `assets/narration.mp3` | Voiceover (Edge TTS · en-GB-RyanNeural) |
+| `output/runnr-advert.mp4` | English (~82s) · en-GB Ryan |
+| `output/runnr-advert-de.mp4` | German (~94s) · calm de-DE Conrad (−8% rate) |
+| `output/runnr-advert-*-9x16.mp4` | Vertical crops |
 | `assets/narration.vtt` | Timed captions |
 | `scripts/narration.txt` | Script |
 | `scripts/render_advert.py` | Regenerator |
@@ -43,10 +43,17 @@ Same arc as [Horizon’s launch ad](https://x.com/horizon_trade_x/status/2077432
 ## Regenerate
 
 ```bash
-edge-tts --voice en-US-AndrewNeural --rate=+2% \
+# English
+edge-tts --voice en-GB-RyanNeural --rate=+0% \
   --file runnr-advert/scripts/narration.txt \
   --write-media runnr-advert/assets/narration.mp3 \
   --write-subtitles runnr-advert/assets/narration.vtt
+python3 runnr-advert/scripts/render_advert.py --lang en
 
-python3 runnr-advert/scripts/render_advert.py
+# German (calm male)
+edge-tts --voice de-DE-ConradNeural --rate=-8% \
+  --file runnr-advert/scripts/narration-de.txt \
+  --write-media runnr-advert/assets/narration-de.mp3 \
+  --write-subtitles runnr-advert/assets/narration-de.vtt
+python3 runnr-advert/scripts/render_advert.py --lang de
 ```

@@ -13,13 +13,26 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 FONTS = ASSETS / "fonts"
-FRAMES = ROOT / "frames"
 OUTPUT = ROOT / "output"
 
 W, H = 1920, 1080
 FPS = 30
-DURATION = 82.0
-TOTAL = int(DURATION * FPS)
+
+# Per-language duration / audio / output naming
+LANG_CFG = {
+    "en": {
+        "duration": 82.0,
+        "audio": "narration.mp3",
+        "out": "runnr-advert",
+        "frames": "frames",
+    },
+    "de": {
+        "duration": 95.0,
+        "audio": "narration-de.mp3",
+        "out": "runnr-advert-de",
+        "frames": "frames-de",
+    },
+}
 
 BG = (8, 12, 18)
 SURFACE = (12, 17, 24)
@@ -475,24 +488,100 @@ def make_analytics_screen(progress: float) -> Image.Image:
     return screen
 
 
-def render_frame(i: int) -> Image.Image:
+def _copy(d: dict) -> dict:
+    return dict(d)
+
+
+EN = {
+    "hook_words": ["HASN'T", "CHANGED", "20 YEARS"],
+    "hook_sub": "The trading workflow",
+    "today": "Today",
+    "today_sub": "we're changing that",
+    "tagline1": "The discipline coach",
+    "tagline2": "for traders who already know their edge",
+    "show": "Let me show you how it works.",
+    "cap_sizer": "one percent risk · stop set · 2R",
+    "cap_broker": "Alpaca today · CSV from anywhere",
+    "cap_watch": "levels · thesis · price alerts",
+    "cap_disc": "scores the discipline — not just P&L",
+    "coach_q1": "Why do I cut winners early?",
+    "coach_a1": [
+        "You exit at +0.8R on winning NVDA setups — your plan says 2R.",
+        "Cutting winners early cost €640 this month.",
+    ],
+    "cap_coach1": "why do I cut winners early?",
+    "coach_q2": "P&L if I followed rules 100%?",
+    "coach_a2": ["If every trade followed Runnr rules this month:"],
+    "cap_coach2": "rules on every trade",
+    "cap_impact": "money discipline would have saved",
+    "cap_analytics": "equity · heatmap · institutional stats",
+    "edge1": "Your edge works.",
+    "edge2": "Your discipline doesn't —",
+    "edge3": "until it does.",
+    "ver1": "Version one.",
+    "ver2": "It's just the beginning.",
+    "inst": "Institutional habits.\nWithout the institutional stack.",
+    "cta": "Get started",
+    "tag": "Discipline over dopamine",
+    # scene end times (seconds) — British EN VTT
+    "t": [4.1, 6.7, 8.7, 12.5, 14.9, 21.8, 30.6, 37.8, 46.3, 49.6, 53.8, 59.0, 64.3, 69.3, 73.6, 78.3],
+}
+
+DE = {
+    "hook_words": ["HAT SICH", "NICHT", "GEÄNDERT"],
+    "hook_sub": "Der Handelsablauf",
+    "today": "Heute",
+    "today_sub": "ändern wir das",
+    "tagline1": "Der Disziplin-Coach",
+    "tagline2": "für Trader, die ihren Edge bereits kennen",
+    "show": "Ich zeige dir, wie es funktioniert.",
+    "cap_sizer": "ein Prozent Risiko · Stop · 2R",
+    "cap_broker": "Alpaca heute · CSV von überall",
+    "cap_watch": "Levels · Thesis · Kursalarme",
+    "cap_disc": "bewertet die Disziplin — nicht nur P&L",
+    "coach_q1": "Warum schließe ich Gewinner zu früh?",
+    "coach_a1": [
+        "Du steigst bei +0,8R aus NVDA-Setups aus — dein Plan sagt 2R.",
+        "Frühe Gewinne kosten dich diesen Monat €640.",
+    ],
+    "cap_coach1": "Gewinner zu früh geschlossen?",
+    "coach_q2": "P&L bei 100% Regeldisziplin?",
+    "coach_a2": ["Wenn jeder Trade den Runnr-Regeln gefolgt wäre:"],
+    "cap_coach2": "Regeln bei jedem Trade",
+    "cap_impact": "Geld, das Disziplin gerettet hätte",
+    "cap_analytics": "Equity · Heatmap · Kennzahlen",
+    "edge1": "Dein Edge funktioniert.",
+    "edge2": "Deine Disziplin nicht —",
+    "edge3": "bis sie es tut.",
+    "ver1": "Version eins.",
+    "ver2": "Es ist erst der Anfang.",
+    "inst": "Institutionelle Gewohnheiten.\nOhne den institutionellen Stack.",
+    "cta": "Jetzt starten",
+    "tag": "Disziplin statt Dopamin",
+    # scene end times — calm DE Conrad VTT (~94s)
+    "t": [4.5, 6.7, 8.9, 13.5, 16.7, 24.7, 34.1, 42.2, 51.9, 55.9, 62.3, 68.6, 74.5, 80.0, 84.9, 91.1],
+}
+
+
+def render_frame(i: int, lang: str = "en") -> Image.Image:
+    S = DE if lang == "de" else EN
+    ends = S["t"]
     t = i / FPS
     img = scene_bg(t)
     draw = ImageDraw.Draw(img)
 
-    # Timeline synced to British narration VTT (~81s)
-    if t < 4.1:
-        words = ["HASN'T", "CHANGED", "20 YEARS"]
-        idx = min(len(words) - 1, int((t / 4.1) * len(words)))
-        draw_centered(draw, words[idx], H // 2 - 30, font("head_semi", 96), GOLD)
-        draw_centered(draw, "The trading workflow", H // 2 + 70, font("body", 26), TEXT2)
+    if t < ends[0]:
+        words = S["hook_words"]
+        idx = min(len(words) - 1, int((t / ends[0]) * len(words)))
+        draw_centered(draw, words[idx], H // 2 - 30, font("head_semi", 90 if lang == "de" else 96), GOLD)
+        draw_centered(draw, S["hook_sub"], H // 2 + 70, font("body", 26), TEXT2)
 
-    elif t < 6.7:
-        draw_centered(draw, "Today", H // 2 - 30, font("head_italic", 110), TEXT)
-        draw_centered(draw, "we're changing that", H // 2 + 70, font("body", 28), TEXT2)
+    elif t < ends[1]:
+        draw_centered(draw, S["today"], H // 2 - 30, font("head_italic", 110), TEXT)
+        draw_centered(draw, S["today_sub"], H // 2 + 70, font("body", 28), TEXT2)
 
-    elif t < 8.7:
-        local = ease_out((t - 6.7) / 2.0)
+    elif t < ends[2]:
+        local = ease_out((t - ends[1]) / max(0.01, ends[2] - ends[1]))
         icon = Image.open(ASSETS / "runnr-icon.png").convert("RGBA").resize((140, 140))
         glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
         gd = ImageDraw.Draw(glow)
@@ -504,107 +593,88 @@ def render_frame(i: int) -> Image.Image:
         draw = ImageDraw.Draw(img)
         draw_centered(draw, "runnr", H // 2 + 90, font("head_italic", 72), TEXT)
 
-    elif t < 12.5:
-        draw_centered(draw, "The discipline coach", H // 2 - 50, font("head", 56), TEXT, max_width=1400)
-        draw_centered(draw, "for traders who already know their edge", H // 2 + 40, font("body", 28), GOLD_LIGHT, max_width=1200)
+    elif t < ends[3]:
+        draw_centered(draw, S["tagline1"], H // 2 - 50, font("head", 56), TEXT, max_width=1400)
+        draw_centered(draw, S["tagline2"], H // 2 + 40, font("body", 28), GOLD_LIGHT, max_width=1200)
 
-    elif t < 14.9:
-        draw_centered(draw, "Let me show you how it works.", H // 2, font("head", 48), TEXT, max_width=1400)
+    elif t < ends[4]:
+        draw_centered(draw, S["show"], H // 2, font("head", 48), TEXT, max_width=1400)
 
-    elif t < 21.8:
-        local = (t - 14.9) / 6.9
+    elif t < ends[5]:
+        local = (t - ends[4]) / max(0.01, ends[5] - ends[4])
         screen = make_sizer_screen(local)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "one percent risk · stop set · 2R")
+        caption(draw, S["cap_sizer"])
 
-    elif t < 30.6:
-        local = (t - 21.8) / 8.8
+    elif t < ends[6]:
+        local = (t - ends[5]) / max(0.01, ends[6] - ends[5])
         screen = make_broker_screen(local)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "Alpaca today · CSV from anywhere")
+        caption(draw, S["cap_broker"])
 
-    elif t < 37.8:
-        local = (t - 30.6) / 7.2
+    elif t < ends[7]:
+        local = (t - ends[6]) / max(0.01, ends[7] - ends[6])
         screen = make_watchlist_screen(local)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "levels · thesis · price alerts")
+        caption(draw, S["cap_watch"])
 
-    elif t < 46.3:
-        local = (t - 37.8) / 8.5
+    elif t < ends[8]:
+        local = (t - ends[7]) / max(0.01, ends[8] - ends[7])
         screen = make_discipline_screen(local)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "scores the discipline — not just P&L")
+        caption(draw, S["cap_disc"])
 
-    elif t < 49.6:
-        local = (t - 46.3) / 3.3
-        screen = make_coach_screen(
-            local,
-            "Why do I cut winners early?",
-            [
-                "You exit at +0.8R on winning NVDA setups — your plan says 2R.",
-                "Cutting winners early cost €640 this month.",
-            ],
-        )
+    elif t < ends[9]:
+        local = (t - ends[8]) / max(0.01, ends[9] - ends[8])
+        screen = make_coach_screen(local, S["coach_q1"], S["coach_a1"])
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "why do I cut winners early?")
+        caption(draw, S["cap_coach1"])
 
-    elif t < 53.8:
-        local = (t - 49.6) / 4.2
-        screen = make_coach_screen(
-            local,
-            "P&L if I followed rules 100%?",
-            ["If every trade followed Runnr rules this month:"],
-            show_projection=True,
-        )
+    elif t < ends[10]:
+        local = (t - ends[9]) / max(0.01, ends[10] - ends[9])
+        screen = make_coach_screen(local, S["coach_q2"], S["coach_a2"], show_projection=True)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "rules on every trade")
+        caption(draw, S["cap_coach2"])
 
-    elif t < 59.0:
-        local = (t - 53.8) / 5.2
+    elif t < ends[11]:
+        local = (t - ends[10]) / max(0.01, ends[11] - ends[10])
         screen = make_journal_impact(local)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "money discipline would have saved")
+        caption(draw, S["cap_impact"])
 
-    elif t < 64.3:
-        local = (t - 59.0) / 5.3
+    elif t < ends[12]:
+        local = (t - ends[11]) / max(0.01, ends[12] - ends[11])
         screen = make_analytics_screen(local)
         img = phone_frame(scene_bg(t, accent_y=0.92), screen, 10)
         draw = ImageDraw.Draw(img)
-        caption(draw, "equity · heatmap · institutional stats")
+        caption(draw, S["cap_analytics"])
 
-    elif t < 69.3:
-        local = (t - 64.3) / 5.0
-        draw_centered(draw, "Your edge works.", H // 2 - 50, font("head", 56), TEXT)
+    elif t < ends[13]:
+        local = (t - ends[12]) / max(0.01, ends[13] - ends[12])
+        draw_centered(draw, S["edge1"], H // 2 - 50, font("head", 52 if lang == "de" else 56), TEXT)
         if local > 0.3:
-            draw_centered(draw, "Your discipline doesn't —", H // 2 + 20, font("head", 40), TEXT2)
-            draw_centered(draw, "until it does.", H // 2 + 80, font("head_italic", 44), ACCENT)
+            draw_centered(draw, S["edge2"], H // 2 + 20, font("head", 36 if lang == "de" else 40), TEXT2)
+            draw_centered(draw, S["edge3"], H // 2 + 80, font("head_italic", 44), ACCENT)
 
-    elif t < 73.6:
-        draw_centered(draw, "Version one.", H // 2 - 30, font("head", 64), TEXT)
-        draw_centered(draw, "It's just the beginning.", H // 2 + 50, font("body", 28), GOLD_LIGHT)
+    elif t < ends[14]:
+        draw_centered(draw, S["ver1"], H // 2 - 30, font("head", 64), TEXT)
+        draw_centered(draw, S["ver2"], H // 2 + 50, font("body", 28), GOLD_LIGHT)
 
-    elif t < 78.3:
-        draw_centered(
-            draw,
-            "Institutional habits.\nWithout the institutional stack.",
-            H // 2,
-            font("head", 48),
-            TEXT,
-            max_width=1500,
-        )
+    elif t < ends[15]:
+        draw_centered(draw, S["inst"], H // 2, font("head", 48), TEXT, max_width=1500)
 
     else:
         icon = Image.open(ASSETS / "runnr-icon.png").convert("RGBA").resize((88, 88))
         img.paste(icon, (W // 2 - 44, H // 2 - 200), icon)
         draw = ImageDraw.Draw(img)
-        draw_centered(draw, "Get started", H // 2 - 60, font("head", 56), TEXT)
+        draw_centered(draw, S["cta"], H // 2 - 60, font("head", 56), TEXT)
         label = "runnr.fyi"
         fnt = font("body_med", 26)
         tw = draw.textlength(label, font=fnt)
@@ -613,29 +683,42 @@ def render_frame(i: int) -> Image.Image:
         y0 = H // 2 + 20
         rounded(draw, (x0, y0, x0 + pw, y0 + ph), 8, ACCENT)
         draw.text((x0 + 32, y0 + 14), label, font=fnt, fill=BG)
-        draw_centered(draw, "Discipline over dopamine", H // 2 + 130, font("body", 22), TEXT2)
+        draw_centered(draw, S["tag"], H // 2 + 130, font("body", 22), TEXT2)
 
     return img
 
 
 def main():
-    FRAMES.mkdir(parents=True, exist_ok=True)
+    import argparse
+
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--lang", choices=["en", "de"], default="en")
+    args = ap.parse_args()
+    lang = args.lang
+    cfg = LANG_CFG[lang]
+    duration = cfg["duration"]
+    total = int(duration * FPS)
+    frames_dir = ROOT / cfg["frames"]
+    out_stem = cfg["out"]
+    audio = ASSETS / cfg["audio"]
+
+    frames_dir.mkdir(parents=True, exist_ok=True)
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    for p in FRAMES.glob("*.jpg"):
+    for p in frames_dir.glob("*.jpg"):
         p.unlink()
 
-    print(f"Rendering {TOTAL} frames @ {FPS}fps ({DURATION}s)…")
-    for i in range(TOTAL):
-        render_frame(i).save(FRAMES / f"frame_{i:05d}.jpg", quality=92)
-        if i % 120 == 0:
-            print(f"  {i}/{TOTAL}")
+    print(f"Rendering {lang.upper()} · {total} frames @ {FPS}fps ({duration}s)…")
+    for i in range(total):
+        render_frame(i, lang=lang).save(frames_dir / f"frame_{i:05d}.jpg", quality=92)
+        if i % 150 == 0:
+            print(f"  {i}/{total}")
 
-    silent = OUTPUT / "runnr-advert-silent.mp4"
-    final = OUTPUT / "runnr-advert.mp4"
+    silent = OUTPUT / f"{out_stem}-silent.mp4"
+    final = OUTPUT / f"{out_stem}.mp4"
     subprocess.check_call(
         [
             "ffmpeg", "-y", "-framerate", str(FPS),
-            "-i", str(FRAMES / "frame_%05d.jpg"),
+            "-i", str(frames_dir / "frame_%05d.jpg"),
             "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "18", "-preset", "medium",
             str(silent),
         ]
@@ -644,12 +727,12 @@ def main():
         [
             "ffmpeg", "-y",
             "-i", str(silent),
-            "-i", str(ASSETS / "narration.mp3"),
+            "-i", str(audio),
             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest",
             str(final),
         ]
     )
-    vertical = OUTPUT / "runnr-advert-9x16.mp4"
+    vertical = OUTPUT / f"{out_stem}-9x16.mp4"
     subprocess.check_call(
         [
             "ffmpeg", "-y", "-i", str(final),
@@ -660,11 +743,11 @@ def main():
     )
     artifacts = Path("/opt/cursor/artifacts")
     artifacts.mkdir(parents=True, exist_ok=True)
-    subprocess.check_call(["cp", str(final), str(artifacts / "runnr-advert.mp4")])
-    subprocess.check_call(["cp", str(vertical), str(artifacts / "runnr-advert-9x16.mp4")])
-    Image.open(FRAMES / f"frame_{int(7.5 * FPS):05d}.jpg").save(artifacts / "runnr-advert-poster.jpg", quality=90)
-    # also mid-watchlist poster
-    Image.open(FRAMES / f"frame_{int(34 * FPS):05d}.jpg").save(artifacts / "runnr-advert-watchlist.jpg", quality=90)
+    subprocess.check_call(["cp", str(final), str(artifacts / f"{out_stem}.mp4")])
+    subprocess.check_call(["cp", str(vertical), str(artifacts / f"{out_stem}-9x16.mp4")])
+    Image.open(frames_dir / f"frame_{int(7.5 * FPS):05d}.jpg").save(
+        artifacts / f"{out_stem}-poster.jpg", quality=90
+    )
     print("Done →", final)
 
 
