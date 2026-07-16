@@ -1,0 +1,8 @@
+frames/
+frames-de/
+preview/
+output/*-silent.mp4
+output/*-mix.m4a
+assets/fonts/.cache/
+**/__pycache__/
+*.pyc
