@@ -21,14 +21,16 @@ FPS = 30
 # Per-language duration / audio / output naming
 LANG_CFG = {
     "en": {
-        "duration": 82.0,
+        "duration": 65.0,
         "audio": "narration.mp3",
+        "bed": "bed-rising.mp3",
         "out": "runnr-advert",
         "frames": "frames",
     },
     "de": {
         "duration": 95.0,
         "audio": "narration-de.mp3",
+        "bed": "bed-rising.mp3",
         "out": "runnr-advert-de",
         "frames": "frames-de",
     },
@@ -493,38 +495,38 @@ def _copy(d: dict) -> dict:
 
 
 EN = {
-    "hook_words": ["HASN'T", "CHANGED", "20 YEARS"],
-    "hook_sub": "The trading workflow",
-    "today": "Today",
-    "today_sub": "we're changing that",
-    "tagline1": "The discipline coach",
-    "tagline2": "for traders who already know their edge",
-    "show": "Let me show you how it works.",
-    "cap_sizer": "one percent risk · stop set · 2R",
-    "cap_broker": "Alpaca today · CSV from anywhere",
-    "cap_watch": "levels · thesis · price alerts",
-    "cap_disc": "scores the discipline — not just P&L",
+    "hook_words": ["HASN'T", "CHANGED"],
+    "hook_sub": "20 years",
+    "today": "Until now.",
+    "today_sub": "",
+    "tagline1": "Discipline coach.",
+    "tagline2": "For traders who already know their edge.",
+    "show": "Here's how it works.",
+    "cap_sizer": "1% risk · stop · 2R",
+    "cap_broker": "Broker sync.",
+    "cap_watch": "Levels. Thesis. Alerts.",
+    "cap_disc": "Discipline — not P&L.",
     "coach_q1": "Why do I cut winners early?",
     "coach_a1": [
-        "You exit at +0.8R on winning NVDA setups — your plan says 2R.",
-        "Cutting winners early cost €640 this month.",
+        "You exit at +0.8R — your plan says 2R.",
+        "That leak: €640 this month.",
     ],
-    "cap_coach1": "why do I cut winners early?",
+    "cap_coach1": "Cut winners early?",
     "coach_q2": "P&L if I followed rules 100%?",
-    "coach_a2": ["If every trade followed Runnr rules this month:"],
-    "cap_coach2": "rules on every trade",
-    "cap_impact": "money discipline would have saved",
-    "cap_analytics": "equity · heatmap · institutional stats",
+    "coach_a2": ["If every trade followed the rules:"],
+    "cap_coach2": "Rules win.",
+    "cap_impact": "What leaks cost you.",
+    "cap_analytics": "Equity. Heatmap. Stats.",
     "edge1": "Your edge works.",
     "edge2": "Your discipline doesn't —",
     "edge3": "until it does.",
     "ver1": "Version one.",
-    "ver2": "It's just the beginning.",
-    "inst": "Institutional habits.\nWithout the institutional stack.",
+    "ver2": "Just the beginning.",
+    "inst": "Institutional habits.\nWithout the stack.",
     "cta": "Get started",
     "tag": "Discipline over dopamine",
-    # scene end times (seconds) — British EN VTT
-    "t": [4.1, 6.7, 8.7, 12.5, 14.9, 21.8, 30.6, 37.8, 46.3, 49.6, 53.8, 59.0, 64.3, 69.3, 73.6, 78.3],
+    # scene end times — punchy EN VTT (~64s)
+    "t": [2.9, 4.5, 6.3, 9.7, 11.6, 17.1, 22.0, 26.7, 31.5, 34.5, 38.1, 42.7, 49.4, 54.0, 57.2, 61.7],
 }
 
 DE = {
@@ -577,8 +579,9 @@ def render_frame(i: int, lang: str = "en") -> Image.Image:
         draw_centered(draw, S["hook_sub"], H // 2 + 70, font("body", 26), TEXT2)
 
     elif t < ends[1]:
-        draw_centered(draw, S["today"], H // 2 - 30, font("head_italic", 110), TEXT)
-        draw_centered(draw, S["today_sub"], H // 2 + 70, font("body", 28), TEXT2)
+        draw_centered(draw, S["today"], H // 2 - 10, font("head_italic", 110), TEXT)
+        if S.get("today_sub"):
+            draw_centered(draw, S["today_sub"], H // 2 + 70, font("body", 28), TEXT2)
 
     elif t < ends[2]:
         local = ease_out((t - ends[1]) / max(0.01, ends[2] - ends[1]))
@@ -671,19 +674,40 @@ def render_frame(i: int, lang: str = "en") -> Image.Image:
         draw_centered(draw, S["inst"], H // 2, font("head", 48), TEXT, max_width=1500)
 
     else:
-        icon = Image.open(ASSETS / "runnr-icon.png").convert("RGBA").resize((88, 88))
-        img.paste(icon, (W // 2 - 44, H // 2 - 200), icon)
+        # Big pulsing CTA
+        pulse = 0.5 + 0.5 * math.sin(t * 7.0)
+        scale = 1.0 + 0.08 * pulse
+        glow_a = int(40 + 70 * pulse)
+        icon = Image.open(ASSETS / "runnr-icon.png").convert("RGBA").resize((96, 96))
+        img.paste(icon, (W // 2 - 48, H // 2 - 230), icon)
         draw = ImageDraw.Draw(img)
-        draw_centered(draw, S["cta"], H // 2 - 60, font("head", 56), TEXT)
+        draw_centered(draw, S["cta"], H // 2 - 90, font("head", 64), TEXT)
+
         label = "runnr.fyi"
-        fnt = font("body_med", 26)
+        fnt = font("body_med", 34)
         tw = draw.textlength(label, font=fnt)
-        pw, ph = tw + 64, 58
+        pw = (tw + 96) * scale
+        ph = 78 * scale
         x0 = (W - pw) / 2
-        y0 = H // 2 + 20
-        rounded(draw, (x0, y0, x0 + pw, y0 + ph), 8, ACCENT)
-        draw.text((x0 + 32, y0 + 14), label, font=fnt, fill=BG)
-        draw_centered(draw, S["tag"], H // 2 + 130, font("body", 22), TEXT2)
+        y0 = H // 2 + 10
+        # outer glow pulse
+        glow = Image.new("RGBA", (W, H), (0, 0, 0, 0))
+        gd = ImageDraw.Draw(glow)
+        pad = 18 + 10 * pulse
+        gd.rounded_rectangle(
+            (x0 - pad, y0 - pad, x0 + pw + pad, y0 + ph + pad),
+            radius=int(22 + 4 * pulse),
+            fill=(*ACCENT, glow_a),
+        )
+        glow = glow.filter(ImageFilter.GaussianBlur(18))
+        img = Image.alpha_composite(img.convert("RGBA"), glow).convert("RGB")
+        draw = ImageDraw.Draw(img)
+        rounded(draw, (x0, y0, x0 + pw, y0 + ph), 14, ACCENT)
+        # center label in scaled button
+        lx = x0 + (pw - tw) / 2
+        ly = y0 + (ph - fnt.size) / 2 - 2
+        draw.text((lx, ly), label, font=fnt, fill=BG)
+        draw_centered(draw, S["tag"], H // 2 + 160, font("body", 24), TEXT2)
 
     return img
 
@@ -723,11 +747,31 @@ def main():
             str(silent),
         ]
     )
+    # Mix VO + subtle rising bed (bed duck under speech)
+    bed = ASSETS / cfg.get("bed", "bed-rising.mp3")
+    mixed_audio = OUTPUT / f"{out_stem}-mix.m4a"
+    if bed.exists():
+        subprocess.check_call(
+            [
+                "ffmpeg", "-y",
+                "-i", str(audio),
+                "-stream_loop", "-1", "-i", str(bed),
+                "-filter_complex",
+                "[0:a]volume=1.0,aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[vo];"
+                "[1:a]volume=0.16,highpass=f=80,lowpass=f=4000,"
+                "afade=t=in:st=0:d=2,aformat=sample_fmts=fltp:sample_rates=44100:channel_layouts=stereo[bed];"
+                "[vo][bed]amix=inputs=2:duration=first:dropout_transition=2,loudnorm=I=-14:TP=-1.5:LRA=9[a]",
+                "-map", "[a]", "-c:a", "aac", "-b:a", "192k", str(mixed_audio),
+            ]
+        )
+        audio_for_mux = mixed_audio
+    else:
+        audio_for_mux = audio
     subprocess.check_call(
         [
             "ffmpeg", "-y",
             "-i", str(silent),
-            "-i", str(audio),
+            "-i", str(audio_for_mux),
             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-shortest",
             str(final),
         ]

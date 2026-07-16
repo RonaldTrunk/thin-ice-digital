@@ -6,7 +6,7 @@ Horizon-style product launch advert for [Runnr](https://runnr.fyi/) — the disc
 
 | File | Description |
 |------|-------------|
-| `output/runnr-advert.mp4` | English (~82s) · en-GB Ryan |
+| `output/runnr-advert.mp4` | English (~65s) · punchier Ryan + rising bed + pulse CTA |
 | `output/runnr-advert-de.mp4` | German (~94s) · calm de-DE Conrad (−8% rate) |
 | `output/runnr-advert-*-9x16.mp4` | Vertical crops |
 | `assets/narration.vtt` | Timed captions |
@@ -57,3 +57,10 @@ edge-tts --voice de-DE-ConradNeural --rate=-8% \
   --write-subtitles runnr-advert/assets/narration-de.vtt
 python3 runnr-advert/scripts/render_advert.py --lang de
 ```
+
+
+## Tune notes (EN v2)
+- VO: `en-GB-RyanNeural` at +10% rate / +3Hz pitch / +5% volume
+- Overlays shortened for punch
+- Subtle rising pad bed under VO (`assets/bed-rising.mp3`)
+- End CTA button larger with pulse glow
