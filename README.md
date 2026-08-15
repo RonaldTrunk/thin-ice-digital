@@ -1,6 +1,6 @@
 # Thin Ice Digital
 
-Company site for [thinicedigital.com](https://thinicedigital.com) — Berlin software for traders and institutions.
+Company site for [thinicedigital.com](https://thinicedigital.com) — Oxford software for traders and institutions.
 
 Two products:
 
