@@ -44,6 +44,7 @@ class Settings(BaseSettings):
     daily_loss_limit: float = -0.02
     spy_crash_day: float = -0.03
     min_buy_confidence: float = 0.55
+    crypto_qty_precision: int = 6
 
 
 @lru_cache

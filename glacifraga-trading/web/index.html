@@ -81,6 +81,13 @@ footer a:hover{color:var(--gold)}
 .baron-pos-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(245,242,236,0.05)}
 .baron-pos-row:last-child{border-bottom:none}
 .baron-note{font-size:12px;color:rgba(245,242,236,0.35);margin-top:1rem;line-height:1.6}
+.sleeves-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:2px;max-width:960px;margin:0 auto 3rem}
+.sleeve-card{padding:2.5rem 2rem;background:rgba(245,242,236,0.02);border:1px solid rgba(201,169,110,0.08)}
+.sleeve-kicker{font-size:9px;letter-spacing:0.4em;text-transform:uppercase;color:var(--gold);margin-bottom:0.75rem}
+.sleeve-card h3{font-family:"Cormorant Garamond",serif;font-weight:300;font-size:1.8rem;margin-bottom:0.75rem}
+.sleeve-card p{font-size:14px;line-height:1.7;color:rgba(245,242,236,0.55);margin-bottom:1rem}
+.sleeve-card ul{list-style:none;font-size:13px;color:rgba(245,242,236,0.45);line-height:1.8}
+.sleeve-card li::before{content:"— ";color:var(--gold)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scrollPulse{0%,100%{opacity:0.5}50%{opacity:1}}
 </style>
@@ -100,6 +107,7 @@ footer a:hover{color:var(--gold)}
     <div class="cta-row">
       <a href="/docs" class="btn-primary">Live API</a>
       <a href="#baron-live" class="btn-secondary">Baron Live</a>
+      <a href="#aurora" class="btn-secondary">Aurora · BTC</a>
     </div>
   </div>
   <div class="scroll-hint">
@@ -132,8 +140,35 @@ footer a:hover{color:var(--gold)}
     <div class="baron-panel-body" id="baron-panel-body">Fetching live account data…</div>
   </div>
   <p class="baron-note" style="text-align:center;max-width:720px;margin:1.5rem auto 0">
-    Same Alpaca account as the Railway worker. BOT_MODE=BARON runs the Obsidian 48 universe; Duke adds BTC (Aurora).
+    Same Alpaca account as the Railway worker. <code>BOT_MODE=BARON</code> runs the Obsidian 48 universe; <code>DUKE</code> / <code>AURORA</code> adds Bitcoin with fractional sizing.
   </p>
+</section>
+
+<section class="features-section" id="aurora">
+  <p class="section-label">Sleeves</p>
+  <h2 class="section-title">Obsidian and Aurora</h2>
+  <div class="sleeves-grid">
+    <article class="sleeve-card">
+      <div class="sleeve-kicker">Conservative · BARON</div>
+      <h3>Obsidian 48</h3>
+      <p>Equities and commodities. No crypto. EOD scan 16:05 ET. The v5 tearsheet above is this book — 2017–24 Jul 2026.</p>
+      <ul>
+        <li>48 names, cash-funded, no leverage</li>
+        <li>Trail 2.5× ATR on equities, 3.0× on commodities</li>
+        <li>Whole-share sizing, 1% AUM risk, 10% cap</li>
+      </ul>
+    </article>
+    <article class="sleeve-card">
+      <div class="sleeve-kicker">Aggressive · DUKE</div>
+      <h3>Aurora + Bitcoin</h3>
+      <p>The same 20-day breakout gates on the Obsidian book, plus BTC-USD. Daily bars, 3.0× ATR trail, fractional quantity so a $100k book can still express 1% risk.</p>
+      <ul>
+        <li>POST /api/v1/signals/generate with BTC, BTCUSD, or BTC-USD</li>
+        <li>GET /api/v1/aurora/status (alias /api/v1/duke/status)</li>
+        <li>Yahoo daily history when Stooq is unreachable</li>
+      </ul>
+    </article>
+  </div>
 </section>
 
 <section class="features-section">
@@ -166,6 +201,18 @@ footer a:hover{color:var(--gold)}
       <div class="signal-row"><span>Stop Loss</span><span>$150.42</span></div>
       <div class="signal-row"><span>Take Profit</span><span>$167.44</span></div>
       <div class="signal-row hl"><span>Position · 176 shares</span><span>Risk $1,000</span></div>
+    </div>
+  </div>
+  <div class="signal-demo" style="margin-top:2rem">
+    <div class="signal-header">
+      <span class="signal-header-left">POST /api/v1/signals/generate · BTC-USD</span>
+      <span class="signal-badge">AURORA</span>
+    </div>
+    <div class="signal-body">
+      <div class="signal-row hl"><span>Signal</span><span>BUY</span></div>
+      <div class="signal-row"><span>Asset</span><span>Bitcoin · crypto</span></div>
+      <div class="signal-row"><span>Trail</span><span>3.0× ATR</span></div>
+      <div class="signal-row hl"><span>Qty</span><span>Fractional BTC · 1% risk</span></div>
     </div>
   </div>
 </section>

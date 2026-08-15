@@ -71,14 +71,33 @@ OBSIDIAN: tuple[Instrument, ...] = (
 )
 
 BTC = Instrument("BTC-USD", AssetClass.CRYPTO, "Bitcoin")
+CRYPTO_ALIASES = {
+    "BTC": "BTC-USD",
+    "BTCUSD": "BTC-USD",
+    "BTC-USD": "BTC-USD",
+    "XBTUSD": "BTC-USD",
+    "XBT-USD": "BTC-USD",
+    "BITCOIN": "BTC-USD",
+}
 
 assert len(OBSIDIAN) == 48
 
 
+def normalize_symbol(symbol: str) -> str:
+    key = symbol.upper().strip().replace(" ", "")
+    return CRYPTO_ALIASES.get(key, key)
+
+
+def is_crypto_symbol(symbol: str) -> bool:
+    return normalize_symbol(symbol) == BTC.symbol
+
+
+def is_aurora_mode(bot_mode: str) -> bool:
+    return bot_mode.upper().strip() in {"DUKE", "AURORA"}
+
+
 def instrument_for(symbol: str) -> Instrument:
-    key = symbol.upper().strip()
-    aliases = {"BTC": "BTC-USD", "BTCUSD": "BTC-USD", "BITCOIN": "BTC-USD"}
-    key = aliases.get(key, key)
+    key = normalize_symbol(symbol)
     for item in OBSIDIAN:
         if item.symbol == key:
             return item
@@ -88,7 +107,6 @@ def instrument_for(symbol: str) -> Instrument:
 
 
 def universe_for(bot_mode: str) -> tuple[Instrument, ...]:
-    mode = bot_mode.upper().strip()
-    if mode in {"DUKE", "AURORA"}:
+    if is_aurora_mode(bot_mode):
         return OBSIDIAN + (BTC,)
     return OBSIDIAN

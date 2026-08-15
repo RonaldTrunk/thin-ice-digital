@@ -12,7 +12,7 @@ from app.config import Settings, get_settings
 from app.engine import generate_signal
 from app.market import MarketDataError, fetch_bars, fetch_vix
 from app.models import SignalRequest, SignalResponse
-from app.universe import instrument_for, universe_for
+from app.universe import instrument_for, is_aurora_mode, universe_for
 
 PACKAGE_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = PACKAGE_DIR.parent
@@ -59,9 +59,10 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         names = universe_for(cfg.bot_mode)
         return {
             "mode": cfg.bot_mode.upper(),
-            "strategy": "Glacifraga Aurora" if cfg.bot_mode.upper() in {"DUKE", "AURORA"} else "Glacifraga Obsidian",
+            "strategy": "Glacifraga Aurora" if is_aurora_mode(cfg.bot_mode) else "Glacifraga Obsidian",
             "tickers": [item.symbol for item in names],
             "count": len(names),
+            "crypto": ["BTC-USD"] if is_aurora_mode(cfg.bot_mode) else [],
         }
 
     @app.post(
@@ -74,7 +75,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     def generate(request: SignalRequest) -> SignalResponse:
         instrument = instrument_for(request.symbol)
         try:
-            bars = fetch_bars(instrument.symbol if instrument.symbol != "BTC-USD" else "BTC-USD", cfg)
+            bars = fetch_bars(instrument.symbol, cfg)
             vix = fetch_vix(cfg)
         except MarketDataError as exc:
             raise HTTPException(status_code=502, detail=str(exc)) from exc
@@ -90,6 +91,14 @@ def create_app(settings: Settings | None = None) -> FastAPI:
 
     @app.get("/api/v1/baron/status", tags=["baron"], summary="Baron Status")
     def baron() -> dict:
+        return baron_status(cfg)
+
+    @app.get("/api/v1/aurora/status", tags=["baron"], summary="Aurora Status")
+    def aurora() -> dict:
+        return baron_status(cfg)
+
+    @app.get("/api/v1/duke/status", tags=["baron"], summary="Duke Status")
+    def duke() -> dict:
         return baron_status(cfg)
 
     index = WEB_DIR / "index.html"

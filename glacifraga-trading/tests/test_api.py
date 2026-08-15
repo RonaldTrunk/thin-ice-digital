@@ -60,12 +60,42 @@ def test_api_key_required_when_configured(monkeypatch, settings):
     assert ok.status_code == 200
 
 
+def test_duke_universe_and_aurora_status():
+    client = TestClient(create_app(Settings(api_key=None, bot_mode="DUKE")))
+    universe = client.get("/api/v1/universe").json()
+    assert universe["count"] == 49
+    assert universe["strategy"] == "Glacifraga Aurora"
+    assert "BTC-USD" in universe["tickers"]
+    aurora = client.get("/api/v1/aurora/status").json()
+    assert aurora["strategy"] == "Glacifraga Aurora"
+    assert aurora["crypto"] is True
+    assert aurora["tickers"] == 49
+    duke = client.get("/api/v1/duke/status").json()
+    assert duke["mode"] == "DUKE"
+
+
+def test_generate_btc_signal(monkeypatch, settings):
+    bars = make_bars(220, start=60_000, step=80, last_volume=2_200_000, range_pad=2_000)
+    monkeypatch.setattr("app.main.fetch_bars", lambda symbol, cfg=None: bars)
+    monkeypatch.setattr("app.main.fetch_vix", lambda cfg=None: 16.1)
+    client = TestClient(create_app(settings))
+    response = client.post("/api/v1/signals/generate", json={"symbol": "BTCUSD", "account_size": 100000})
+    assert response.status_code == 200
+    body = response.json()
+    assert body["symbol"] == "BTC-USD"
+    assert body["signal"] == "BUY"
+    assert body["qty"] > 0
+    assert body["audit"]["strategy"] == "Glacifraga Aurora"
+
+
 def test_openapi_paths():
     client = TestClient(create_app(Settings(api_key=None)))
     spec = client.get("/openapi.json").json()
     assert spec["info"]["title"] == "Glacifraga Trading"
     assert "/api/v1/signals/generate" in spec["paths"]
     assert "/api/v1/baron/status" in spec["paths"]
+    assert "/api/v1/aurora/status" in spec["paths"]
+    assert "/api/v1/duke/status" in spec["paths"]
 
 
 def test_home_page_has_v5_copy():
@@ -80,3 +110,6 @@ def test_home_page_has_v5_copy():
     assert "$618,591" in html
     assert "2.19" not in html
     assert "+22.0%" in html
+    assert "Aurora" in html
+    assert "Bitcoin" in html
+    assert "BTC-USD" in html

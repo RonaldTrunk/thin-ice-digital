@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo
 import httpx
 
 from app.config import Settings, get_settings
-from app.universe import universe_for
+from app.universe import is_aurora_mode, universe_for
 
 ET = ZoneInfo("America/New_York")
 
@@ -15,7 +15,8 @@ def baron_status(settings: Settings | None = None) -> dict:
     cfg = settings or get_settings()
     tickers = len(universe_for(cfg.bot_mode))
     as_of = datetime.now(ET).isoformat()
-    strategy = "Glacifraga Aurora" if cfg.bot_mode.upper() in {"DUKE", "AURORA"} else "Glacifraga Obsidian"
+    aurora = is_aurora_mode(cfg.bot_mode)
+    strategy = "Glacifraga Aurora" if aurora else "Glacifraga Obsidian"
     if not cfg.alpaca_api_key or not cfg.alpaca_api_secret:
         return {
             "linked": False,
@@ -23,6 +24,7 @@ def baron_status(settings: Settings | None = None) -> dict:
             "strategy": strategy,
             "paper": True,
             "scan_time_et": "16:05",
+            "crypto": aurora,
             "tickers": tickers,
             "equity": None,
             "cash": None,
@@ -49,6 +51,7 @@ def baron_status(settings: Settings | None = None) -> dict:
             "strategy": strategy,
             "paper": True,
             "scan_time_et": "16:05",
+            "crypto": aurora,
             "tickers": tickers,
             "positions": [],
             "position_count": 0,
@@ -74,6 +77,7 @@ def baron_status(settings: Settings | None = None) -> dict:
         "strategy": strategy,
         "paper": "paper" in base,
         "scan_time_et": "16:05",
+        "crypto": aurora,
         "tickers": tickers,
         "equity": float(account.get("equity") or 0),
         "cash": float(account.get("cash") or 0),

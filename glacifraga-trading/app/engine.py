@@ -59,6 +59,7 @@ class SignalResult:
     stop_loss: float | None = None
     take_profit: float | None = None
     shares: int | None = None
+    qty: float | None = None
     stop_distance: float | None = None
     risk_amount: float | None = None
     audit: dict[str, Any] = field(default_factory=dict)
@@ -74,6 +75,7 @@ class SignalResult:
             "stop_loss": self.stop_loss,
             "take_profit": self.take_profit,
             "shares": self.shares,
+            "qty": self.qty,
             "stop_distance": self.stop_distance,
             "risk_amount": self.risk_amount,
             "audit": self.audit,
@@ -121,6 +123,7 @@ def generate_signal(
     rsi_ok = rsi_value is not None and rsi_value > cfg.rsi_threshold
     volume_ok = vol_mult is not None and vol_mult > cfg.volume_multiple
 
+    crypto = inst.asset_class == AssetClass.CRYPTO
     trail_mult = (
         cfg.trail_atr_commodity
         if inst.asset_class in {AssetClass.COMMODITY, AssetClass.CRYPTO}
@@ -137,6 +140,8 @@ def generate_signal(
             take_profit_atr=cfg.take_profit_atr,
             trail_atr_multiple=trail_mult,
             max_position_fraction=cfg.max_position_fraction,
+            fractional=crypto,
+            qty_precision=cfg.crypto_qty_precision,
         )
 
     confidence = _confidence(
@@ -205,6 +210,8 @@ def generate_signal(
             "trail_atr": trail_mult,
             "max_position_fraction": cfg.max_position_fraction,
             "capped": None if plan is None else plan.capped,
+            "fractional": crypto,
+            "qty": None if plan is None else plan.qty,
         },
         "gates": failures,
     }
@@ -219,6 +226,7 @@ def generate_signal(
         stop_loss=None if plan is None else plan.stop_loss,
         take_profit=None if plan is None else plan.take_profit,
         shares=None if plan is None else plan.shares,
+        qty=None if plan is None else plan.qty,
         stop_distance=None if plan is None else plan.stop_distance,
         risk_amount=None if plan is None else plan.risk_amount,
         audit=audit,

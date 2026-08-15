@@ -18,6 +18,7 @@ class SignalResponse(BaseModel):
     stop_loss: float | None = None
     take_profit: float | None = None
     shares: int | None = None
+    qty: float | None = None
     stop_distance: float | None = None
     risk_amount: float | None = None
     audit: dict | None = None
