@@ -17,9 +17,11 @@ Open `http://localhost:4173`.
 
 ## Deploy
 
-This repo is a static GitHub Pages site (no build step).
+The live domain [thinicedigital.com](https://thinicedigital.com) is GitHub Pages on `6tbwmzr522-crypto/thin-ice-digital` (Actions workflow, custom domain already attached).
 
-1. Settings → Pages → Deploy from branch `main`, folder `/` (root).
-2. Custom domain: `thinicedigital.com` (the `CNAME` file is already in the repo).
+This repo has the same workflow (`.github/workflows/pages.yml`). To publish:
 
-Fonts are self-hosted (no Google Fonts request). Fill in street address, Geschäftsführer, and HRB on `impressum.html` once the commercial-register filing is public.
+1. Push these files to `6tbwmzr522-crypto/thin-ice-digital` on `main`, **or**
+2. In that repo: Settings → Pages, then in **this** repo enable Pages (GitHub Actions) and move the `thinicedigital.com` custom domain across.
+
+Fonts are self-hosted (no Google Fonts request). Fill in the registered address and Companies House number on `impressum.html` once the filing is public.
