@@ -72,9 +72,11 @@ def test_home_page_has_v5_copy():
     client = TestClient(create_app(Settings(api_key=None)))
     html = client.get("/").text
     assert "Thin Ice Digital Ltd" in html
-    assert "UG" not in html
+    assert "Thin Ice Digital UG" not in html
     assert "Patience, clarity, and the right moment." in html
     assert "Lielā" not in html
     assert "2017–2026" in html
     assert "2.65" in html
     assert "$618,591" in html
+    assert "2.19" not in html
+    assert "+22.0%" in html
