@@ -29,7 +29,7 @@ def test_integer_equities_unchanged():
 
 
 def test_crypto_buy_uses_aurora_trail_and_qty(settings):
-    bars = make_bars(220, start=60_000, step=80, last_volume=2_200_000, range_pad=2_000)
+    bars = make_bars(220, start=60_000, step=500, last_volume=2_200_000, range_pad=400)
     result = generate_signal(
         bars,
         symbol="BTC",

@@ -75,7 +75,7 @@ def test_duke_universe_and_aurora_status():
 
 
 def test_generate_btc_signal(monkeypatch, settings):
-    bars = make_bars(220, start=60_000, step=80, last_volume=2_200_000, range_pad=2_000)
+    bars = make_bars(220, start=60_000, step=500, last_volume=2_200_000, range_pad=400)
     monkeypatch.setattr("app.main.fetch_bars", lambda symbol, cfg=None: bars)
     monkeypatch.setattr("app.main.fetch_vix", lambda cfg=None: 16.1)
     client = TestClient(create_app(settings))
