@@ -23,8 +23,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Stage company site only
+        run: |
+          mkdir -p _site
+          cp -a index.html 404.html impressum.html privacy.html robots.txt sitemap.xml CNAME .nojekyll _site/
+          cp -a assets css fonts _site/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: .
+          path: _site
       - id: deployment
         uses: actions/deploy-pages@v4

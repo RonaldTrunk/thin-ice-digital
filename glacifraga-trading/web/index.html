@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Glacifraga Trading</title>
+<meta name="description" content="Glacifraga — automated breakout signals, ATR risk management, and a white-label API with an audit trail. Thin Ice Digital Ltd, Oxford.">
+<link rel="canonical" href="https://glacifraga.com/">
+<meta name="theme-color" content="#080c12">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/css/fonts.css">
+<link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+<div class="hero">
+  <div class="hero-bg" style="background-image:url('/assets/kemeru-hero.png')"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="logo-line">
+      <div class="logo-mark"></div>
+      <div class="logo-text">Glacifraga Trading</div>
+      <div class="logo-mark"></div>
+    </div>
+    <h1>Discipline is<br><em>the strategy</em></h1>
+    <p class="tagline">Automated breakout signals. Institutional-grade risk management.<br>Built for those who understand that patience is an edge.</p>
+    <div class="cta-row">
+      <a href="/docs" class="btn-primary">Live API</a>
+      <a href="#baron-live" class="btn-secondary">Baron Live</a>
+    </div>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    <span>Explore</span>
+  </div>
+</div>
+
+<section class="stats-section">
+  <p class="section-label">Backtested Performance · 2017–2026</p>
+  <h2 class="section-title">The numbers speak clearly</h2>
+  <div class="stats-grid">
+    <div class="stat-card"><div class="stat-value">+22.0%</div><div class="stat-label">CAGR</div><div class="stat-sub">Obsidian · 9.6 years</div></div>
+    <div class="stat-card"><div class="stat-value">2.65</div><div class="stat-label">Sharpe Ratio</div><div class="stat-sub">Annualised, 252-day</div></div>
+    <div class="stat-card"><div class="stat-value">~61%</div><div class="stat-label">Win Rate</div><div class="stat-sub">~174 trades / year</div></div>
+    <div class="stat-card"><div class="stat-value">−7.1%</div><div class="stat-label">Max Drawdown</div><div class="stat-sub">Peak-to-trough</div></div>
+    <div class="stat-card"><div class="stat-value">$618k</div><div class="stat-label">Net P&amp;L</div><div class="stat-sub">$618,591 on $100k</div></div>
+  </div>
+  <p class="disclaimer">Confidential — backtested Obsidian 48 through 24 Jul 2026. Profit factor 1.95 · Sortino 4.20. Not indicative of future results.</p>
+</section>
+
+<section class="baron-live-section" id="baron-live">
+  <p class="section-label">Live Paper Trading</p>
+  <h2 class="section-title">Glacifraga Obsidian</h2>
+  <div class="baron-panel">
+    <div class="baron-panel-header">
+      <span class="baron-panel-title">Alpaca paper · 48 tickers · EOD scan 16:05 ET</span>
+      <span class="baron-status-pill" id="baron-status-pill">Loading…</span>
+    </div>
+    <div class="baron-panel-body" id="baron-panel-body">Fetching live account data…</div>
+  </div>
+  <p class="baron-note" style="text-align:center;max-width:720px;margin:1.5rem auto 0">
+    Same Alpaca account as the worker. BOT_MODE=BARON runs the Obsidian 48 universe; Duke adds BTC (Aurora).
+  </p>
+</section>
+
+<section class="features-section">
+  <p class="section-label">Infrastructure</p>
+  <h2 class="section-title">Built for institutions</h2>
+  <div class="features-grid">
+    <div class="feature-card"><div class="feature-number">01</div><div class="feature-title">Breakout Engine</div><p class="feature-desc">20-day high breakouts in confirmed uptrends. Every signal requires RSI(10) momentum, 1.4× volume confirmation, and SMA200 alignment before firing.</p></div>
+    <div class="feature-card"><div class="feature-number">02</div><div class="feature-title">ATR Risk Management</div><p class="feature-desc">Position sizing, stop loss, and take profit calculated from true volatility. 1% account risk per trade, 2× ATR stop, 4× ATR target. No exceptions.</p></div>
+    <div class="feature-card"><div class="feature-number">03</div><div class="feature-title">VIX Regime Filter</div><p class="feature-desc">Confidence scoring adjusts in real time to market stress. High-volatility environments reduce signal confidence automatically.</p></div>
+    <div class="feature-card"><div class="feature-number">04</div><div class="feature-title">White-Label API</div><p class="feature-desc">Clean REST API. Fully configurable per client. Your brand, your compliance, your execution. Integration in hours, not months.</p></div>
+  </div>
+</section>
+
+<section class="signal-section">
+  <p class="section-label">Live Signal · Example Response</p>
+  <h2 class="section-title">Every decision, explained</h2>
+  <div class="signal-demo">
+    <div class="signal-header">
+      <span class="signal-header-left">POST /api/v1/signals/generate</span>
+      <span class="signal-badge">BUY</span>
+    </div>
+    <div class="signal-body">
+      <div class="signal-row hl"><span>Signal</span><span>BUY</span></div>
+      <div class="signal-row hl"><span>Confidence</span><span>0.88</span></div>
+      <div class="signal-row"><span>Price</span><span>$156.09</span></div>
+      <div class="signal-row"><span>20d Breakout</span><span>$153.55 ✓</span></div>
+      <div class="signal-row"><span>RSI(10)</span><span>86.3 ✓</span></div>
+      <div class="signal-row"><span>Volume</span><span>2.04× ✓</span></div>
+      <div class="signal-row"><span>VIX</span><span>16.1 · Green</span></div>
+      <div class="signal-row"><span>Stop Loss</span><span>$150.42</span></div>
+      <div class="signal-row"><span>Take Profit</span><span>$167.44</span></div>
+      <div class="signal-row hl"><span>Position · 176 shares</span><span>Risk $1,000</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="quote-section">
+  <blockquote>&ldquo;Patience, clarity, and the right moment.&rdquo;</blockquote>
+  <p class="quote-attr">Glacifraga Trading · Oxford · Est. 2026</p>
+</section>
+
+<section class="cta-section">
+  <h2>Ready to integrate?</h2>
+  <p>Request API access or explore the live documentation. Institutional pilot partnerships welcome.</p>
+  <div class="cta-row" style="opacity:1;animation:none">
+    <a href="/docs" class="btn-primary">View API Docs</a>
+    <a href="mailto:contact@glacifraga.com" class="btn-secondary">Contact Us</a>
+  </div>
+</section>
+
+<footer>
+  <span>&copy; 2026 Glacifraga Trading · Thin Ice Digital Ltd</span>
+  <div style="display:flex;gap:2rem">
+    <a href="/docs">API Docs</a>
+    <a href="mailto:contact@glacifraga.com">Contact</a>
+  </div>
+</footer>
+<script>
+(function () {
+  const pill = document.getElementById("baron-status-pill");
+  const body = document.getElementById("baron-panel-body");
+  const money = (n) => "$" + Number(n).toLocaleString(undefined, { maximumFractionDigits: 0 });
+
+  fetch("/api/v1/baron/status")
+    .then((r) => r.json())
+    .then((d) => {
+      if (!d.linked) {
+        pill.textContent = "Worker separate";
+        body.innerHTML =
+          "<p>Baron runs as a worker process. Add Alpaca keys on the <strong>web</strong> service to mirror live positions here.</p>" +
+          (d.message ? "<p class='baron-note'>" + d.message + "</p>" : "");
+        return;
+      }
+      pill.textContent = "Live · Paper";
+      pill.classList.add("live");
+      let html =
+        "<div class='baron-grid'>" +
+        "<div class='baron-metric'><div class='baron-metric-label'>Equity</div><div class='baron-metric-value'>" + money(d.equity) + "</div></div>" +
+        "<div class='baron-metric'><div class='baron-metric-label'>Cash</div><div class='baron-metric-value'>" + money(d.cash) + "</div></div>" +
+        "<div class='baron-metric'><div class='baron-metric-label'>Positions</div><div class='baron-metric-value'>" + d.position_count + "</div></div>" +
+        "<div class='baron-metric'><div class='baron-metric-label'>Universe</div><div class='baron-metric-value'>" + d.tickers + "</div></div>" +
+        "</div>";
+      if (d.positions && d.positions.length) {
+        html += "<div class='baron-positions'>";
+        d.positions.forEach((p) => {
+          const pl = (p.unrealized_pl >= 0 ? "+" : "") + money(p.unrealized_pl);
+          html +=
+            "<div class='baron-pos-row'><span>" + p.symbol + " · " + p.qty + " sh</span><span>" + pl + "</span></div>";
+        });
+        html += "</div>";
+      } else {
+        html += "<p>No open positions right now.</p>";
+      }
+      html += "<p class='baron-note'>Updated " + new Date(d.as_of_et).toLocaleString("en-US", { timeZone: "America/New_York" }) + " ET</p>";
+      body.innerHTML = html;
+    })
+    .catch(() => {
+      pill.textContent = "Offline";
+      body.textContent = "Could not reach Baron status API.";
+    });
+})();
+</script>
+</body>
+</html>
