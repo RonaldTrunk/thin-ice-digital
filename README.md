@@ -5,7 +5,7 @@ Company site for [thinicedigital.com](https://thinicedigital.com) — Oxford sof
 Two products:
 
 - **Runnr** — retail discipline system → [runnr.fyi](https://runnr.fyi)
-- **Glacifraga** — institutional signals API
+- **Glacifraga** — institutional signals API → [glacifraga.com](https://glacifraga.com)
 
 ## Local preview
 
