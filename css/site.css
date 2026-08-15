@@ -267,28 +267,13 @@ section{position:relative;z-index:2;background:var(--bg)}
 .product-card.runnr .product-link{color:var(--runnr)}
 .product-card.glacifraga .product-link{color:var(--gold)}
 .visual-band{
-  position:relative;padding:7rem 2rem;
+  position:relative;padding:0;
   border-top:1px solid rgba(201,169,110,0.08);
   overflow:hidden;min-height:420px;
-  display:flex;align-items:center;justify-content:center;
 }
 .visual-band-bg{
   position:absolute;inset:0;
   background-size:cover;background-position:center 60%;
-  filter:saturate(0.85);
-}
-.visual-band-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(8,12,18,0.92) 0%,rgba(8,12,18,0.7) 45%,rgba(8,12,18,0.88) 100%);
-}
-.visual-band-content{position:relative;z-index:1;max-width:640px;text-align:center;padding:0 1rem}
-.visual-band-content p{
-  font-family:"Cormorant Garamond",serif;font-style:italic;
-  font-size:clamp(1.2rem,2.5vw,1.65rem);line-height:1.6;color:var(--white-dim);
-}
-.visual-band-caption{
-  margin-top:1.25rem;font-size:9px;letter-spacing:0.4em;
-  text-transform:uppercase;color:rgba(201,169,110,0.45);
 }
 .philosophy-section{padding:6rem 2rem;border-top:1px solid rgba(201,169,110,0.08)}
 .philosophy-grid{
