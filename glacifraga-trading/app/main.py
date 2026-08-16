@@ -105,7 +105,13 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     if index.exists():
         @app.get("/", include_in_schema=False)
         def home() -> FileResponse:
-            return FileResponse(index)
+            return FileResponse(
+                index,
+                headers={
+                    "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+                    "Pragma": "no-cache",
+                },
+            )
 
         assets = _first_dir(WEB_DIR / "assets", REPO_ROOT / "assets")
         fonts = _first_dir(WEB_DIR / "fonts", REPO_ROOT / "fonts")

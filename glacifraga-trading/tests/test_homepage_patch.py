@@ -76,4 +76,6 @@ def test_served_homepage_is_v5():
     assert "$618,591" in html
     assert "+22.0%" in html
     assert "/assets/kemeru-hero.png" in html
+    assert "info@thinicedigital.com" in html
+    assert "contact@glacifraga.com" not in html
     assert Path("web/assets/kemeru-hero.png").is_file()

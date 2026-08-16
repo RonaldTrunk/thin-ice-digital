@@ -122,8 +122,8 @@ def test_home_page_has_v5_copy():
     assert "Aurora" in html
     assert "Bitcoin" in html
     assert "BTC-USD" in html
-    assert "00:00 UTC" in html
-    assert "00:05 UTC" in html
+    assert "info@thinicedigital.com" in html
+    assert "contact@glacifraga.com" not in html
     hero = client.get("/assets/kemeru-hero.png")
     assert hero.status_code == 200
     assert len(hero.content) > 10_000
