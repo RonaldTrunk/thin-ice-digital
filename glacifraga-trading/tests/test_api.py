@@ -22,7 +22,11 @@ def test_health_and_universe():
     client = TestClient(create_app(Settings(api_key=None, bot_mode="BARON")))
     health = client.get("/api/v1/health").json()
     assert health["ok"] is True
-    universe = client.get("/api/v1/universe").json()
+    assert "mode" not in health
+    locked_out = client.get("/api/v1/universe")
+    assert locked_out.status_code == 503
+    partner = TestClient(create_app(Settings(api_key="secret", bot_mode="BARON")))
+    universe = partner.get("/api/v1/universe", headers={"X-API-Key": "secret"}).json()
     assert universe["count"] == 48
     assert "MSFT" in universe["tickers"]
 
@@ -32,8 +36,7 @@ def test_baron_unlinked_without_keys():
     data = client.get("/api/v1/baron/status").json()
     assert data["linked"] is False
     assert data["tickers"] == 48
-    assert data["scan_time_et"] == "16:05"
-    assert data["crypto_scan_time_utc"] == "00:05"
+    assert "ALPACA" not in (data.get("message") or "")
 
 
 def test_generate_signal_with_fixture_market(monkeypatch, settings):
@@ -42,8 +45,12 @@ def test_generate_signal_with_fixture_market(monkeypatch, settings):
     monkeypatch.setattr("app.main.fetch_bars", lambda symbol, cfg=None: bars)
     monkeypatch.setattr("app.main.fetch_vix", lambda cfg=None: 16.1)
 
-    client = TestClient(create_app(settings))
-    response = client.post("/api/v1/signals/generate", json={"symbol": "MSFT", "account_size": 100000})
+    client = TestClient(create_app(Settings(api_key="secret", bot_mode="BARON", account_size=100_000)))
+    response = client.post(
+        "/api/v1/signals/generate",
+        json={"symbol": "MSFT", "account_size": 100000},
+        headers={"X-API-Key": "secret"},
+    )
     assert response.status_code == 200
     body = response.json()
     assert body["symbol"] == "MSFT"
@@ -57,6 +64,9 @@ def test_api_key_required_when_configured(monkeypatch, settings):
     bars = make_bars(220, last_volume=2_200_000)
     monkeypatch.setattr("app.main.fetch_bars", lambda symbol, cfg=None: bars)
     monkeypatch.setattr("app.main.fetch_vix", lambda cfg=None: 16.1)
+    unconfigured = TestClient(create_app(Settings(api_key=None, bot_mode="BARON")))
+    denied_missing = unconfigured.post("/api/v1/signals/generate", json={"symbol": "MSFT"})
+    assert denied_missing.status_code == 503
     locked = Settings(api_key="secret", bot_mode="BARON")
     client = TestClient(create_app(locked))
     denied = client.post("/api/v1/signals/generate", json={"symbol": "MSFT"})
@@ -70,8 +80,8 @@ def test_api_key_required_when_configured(monkeypatch, settings):
 
 
 def test_duke_universe_and_aurora_status():
-    client = TestClient(create_app(Settings(api_key=None, bot_mode="DUKE")))
-    universe = client.get("/api/v1/universe").json()
+    client = TestClient(create_app(Settings(api_key="secret", bot_mode="DUKE")))
+    universe = client.get("/api/v1/universe", headers={"X-API-Key": "secret"}).json()
     assert universe["count"] == 49
     assert universe["strategy"] == "Glacifraga Aurora"
     assert "BTC-USD" in universe["tickers"]
@@ -87,8 +97,12 @@ def test_generate_btc_signal(monkeypatch, settings):
     bars = make_bars(220, start=60_000, step=500, last_volume=2_200_000, range_pad=400)
     monkeypatch.setattr("app.main.fetch_bars", lambda symbol, cfg=None: bars)
     monkeypatch.setattr("app.main.fetch_vix", lambda cfg=None: 16.1)
-    client = TestClient(create_app(settings))
-    response = client.post("/api/v1/signals/generate", json={"symbol": "BTCUSD", "account_size": 100000})
+    client = TestClient(create_app(Settings(api_key="secret", bot_mode="BARON")))
+    response = client.post(
+        "/api/v1/signals/generate",
+        json={"symbol": "BTCUSD", "account_size": 100000},
+        headers={"X-API-Key": "secret"},
+    )
     assert response.status_code == 200
     body = response.json()
     assert body["symbol"] == "BTC-USD"
@@ -97,14 +111,10 @@ def test_generate_btc_signal(monkeypatch, settings):
     assert body["audit"]["strategy"] == "Glacifraga Aurora"
 
 
-def test_openapi_paths():
-    client = TestClient(create_app(Settings(api_key=None)))
-    spec = client.get("/openapi.json").json()
-    assert spec["info"]["title"] == "Glacifraga Trading"
-    assert "/api/v1/signals/generate" in spec["paths"]
-    assert "/api/v1/baron/status" in spec["paths"]
-    assert "/api/v1/aurora/status" in spec["paths"]
-    assert "/api/v1/duke/status" in spec["paths"]
+def test_openapi_and_docs_are_private():
+    client = TestClient(create_app(Settings(api_key="secret")))
+    assert client.get("/openapi.json").status_code == 404
+    assert client.get("/docs").status_code == 404
 
 
 def test_home_page_has_v5_copy():
@@ -131,6 +141,8 @@ def test_home_page_has_v5_copy():
     assert "EOD scan" not in html
     assert "BOT_MODE" not in html
     assert "/api/v1/aurora/status" not in html
+    assert 'href="/docs"' not in html
+    assert "Request access" in html
     hero = client.get("/assets/kemeru-hero.png")
     assert hero.status_code == 200
     assert len(hero.content) > 10_000

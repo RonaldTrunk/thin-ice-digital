@@ -85,14 +85,12 @@ uvicorn app.main:app --reload --port 8080
 ```
 
 - Site: http://localhost:8080
-- API docs: http://localhost:8080/docs
-- Health: `GET /api/v1/health`
-- Signal: `POST /api/v1/signals/generate` with `{"symbol":"MSFT","account_size":100000}`
-- Bitcoin: `POST /api/v1/signals/generate` with `{"symbol":"BTC-USD"}` (aliases: `BTC`, `BTCUSD`)
-- Baron: `GET /api/v1/baron/status`
-- Aurora: `GET /api/v1/aurora/status` (alias `GET /api/v1/duke/status`)
+- Health: `GET /api/v1/health` (public)
+- Signal: `POST /api/v1/signals/generate` with header `X-API-Key` (required; 503 if `GLACIFRAGA_API_KEY` is unset)
+- Universe: `GET /api/v1/universe` (same key)
+- `/docs` and `/openapi.json` are disabled
 
-Market data: Stooq daily bars, with Yahoo Finance as fallback (Yahoo first for Bitcoin). Set `GLACIFRAGA_API_KEY` to require `X-API-Key` on signal generation. Set Alpaca paper keys to mirror live positions on the Baron panel.
+Set `GLACIFRAGA_API_KEY` on the Railway **web** service. Without it, generate and universe stay closed.
 
 EOD scan (includes BTC when `BOT_MODE=DUKE`):
 

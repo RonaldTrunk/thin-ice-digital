@@ -31,30 +31,27 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app = FastAPI(
         title="Glacifraga Trading",
         version=__version__,
-        description=(
-            "\n## Automated Breakout Strategy Engine\n\n"
-            "**Multi-asset signal generation** across equities, commodities and crypto.\n\n"
-            "- Real-time momentum breakout signals\n"
-            "- ATR-based position sizing and risk management\n"
-            "- VIX regime filter for market stress detection\n"
-            "- Full audit trail on every signal\n"
-            "- White-label ready via REST API\n\n"
-            "**Authentication:** Use your API key in the `X-API-Key` header.\n"
-        ),
+        docs_url=None,
+        redoc_url=None,
+        openapi_url=None,
+        description="Partner API. Authenticate with the X-API-Key header.",
     )
 
     def require_api_key(x_api_key: str | None = Header(default=None, alias="X-API-Key")) -> None:
         expected = cfg.api_key
         if not expected:
-            return
+            raise HTTPException(
+                status_code=503,
+                detail="API key is not configured",
+            )
         if x_api_key != expected:
             raise HTTPException(status_code=401, detail="Invalid or missing API key")
 
     @app.get("/api/v1/health")
     def health() -> dict:
-        return {"ok": True, "version": __version__, "mode": cfg.bot_mode.upper()}
+        return {"ok": True, "version": __version__}
 
-    @app.get("/api/v1/universe")
+    @app.get("/api/v1/universe", dependencies=[Depends(require_api_key)])
     def universe() -> dict:
         names = universe_for(cfg.bot_mode)
         return {

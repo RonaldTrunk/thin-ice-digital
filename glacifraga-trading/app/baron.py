@@ -34,7 +34,7 @@ def baron_status(settings: Settings | None = None) -> dict:
             "positions": [],
             "position_count": 0,
             "as_of_et": as_of,
-            "message": "Add ALPACA_API_KEY and ALPACA_API_SECRET on the web service to mirror live paper positions.",
+            "message": "Paper account is not linked on this service.",
         }
 
     headers = {
@@ -59,7 +59,7 @@ def baron_status(settings: Settings | None = None) -> dict:
             "positions": [],
             "position_count": 0,
             "as_of_et": as_of,
-            "message": f"Alpaca request failed: {exc}",
+            "message": "Paper account is not linked on this service.",
         }
 
     rows = []
