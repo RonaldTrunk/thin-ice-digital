@@ -4,25 +4,36 @@ glacifraga-web is uvicorn. Baron-worker must stay alive; a one-shot
 `python -m app.scan` exits and Railway marks the service as crashed.
 
 Start command: python -m app.worker
+
+Times live in this file so an older app/session.py on Railway cannot crash the import.
 """
 
 from __future__ import annotations
 
 import logging
 import time
-from datetime import datetime, timezone
+from datetime import datetime, time as dt_time, timezone
+from zoneinfo import ZoneInfo
 
 from app.config import get_settings
 from app.scan import run_scan
-from app.session import CRYPTO_SCAN_UTC, EQUITY_SCAN_ET, ET, aware_utc
 from app.universe import is_aurora_mode
 
 log = logging.getLogger("glacifraga.worker")
 POLL_SECONDS = 30
+ET = ZoneInfo("America/New_York")
+EQUITY_SCAN_ET = dt_time(16, 5)
+CRYPTO_SCAN_UTC = dt_time(0, 5)
+
+
+def _aware_utc(now: datetime) -> datetime:
+    if now.tzinfo is None:
+        return now.replace(tzinfo=timezone.utc)
+    return now
 
 
 def due_equity_scan(now: datetime, last_day) -> bool:
-    et = aware_utc(now).astimezone(ET)
+    et = _aware_utc(now).astimezone(ET)
     if et.weekday() >= 5:
         return False
     if et.time() < EQUITY_SCAN_ET:
@@ -33,7 +44,7 @@ def due_equity_scan(now: datetime, last_day) -> bool:
 def due_crypto_scan(now: datetime, last_day, *, aurora: bool) -> bool:
     if not aurora:
         return False
-    utc = aware_utc(now).astimezone(timezone.utc)
+    utc = _aware_utc(now).astimezone(timezone.utc)
     if utc.time() < CRYPTO_SCAN_UTC:
         return False
     return last_day != utc.date()
