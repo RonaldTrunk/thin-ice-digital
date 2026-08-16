@@ -17,6 +17,7 @@ from app.universe import AssetClass, Instrument
 
 ET = ZoneInfo("America/New_York")
 EQUITY_CLOSE_ET = time(16, 0)
+EQUITY_SCAN_ET = time(16, 5)
 CRYPTO_SCAN_UTC = time(0, 5)
 
 
