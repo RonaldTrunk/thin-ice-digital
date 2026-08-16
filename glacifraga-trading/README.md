@@ -52,6 +52,13 @@ Port **8080**. Env: `BOT_MODE`, `GLACIFRAGA_API_KEY`, `ALPACA_API_KEY`, `ALPACA_
 
 Aurora uses the same 20-day breakout, SMA200, RSI(10) > 50, and 1.4× volume gates. Crypto trails at **3.0× ATR** (same as commodities) and sizes in **fractional BTC** so 1% risk still fires on a $100k book.
 
+Bitcoin daily bars settle at **00:00 UTC**. A 16:05 ET equity scan would otherwise evaluate an unfinished UTC candle as a 20-day breakout. The engine drops the in-progress bar. Run the crypto sleeve on its own clock:
+
+```bash
+python -m app.scan --sleeve crypto   # 00:05 UTC
+python -m app.scan --sleeve equity   # 16:05 ET
+```
+
 ## Strategy (Obsidian)
 
 | Gate | Rule |
@@ -91,6 +98,7 @@ EOD scan (includes BTC when `BOT_MODE=DUKE`):
 
 ```bash
 python -m app.scan
+python -m app.scan --sleeve crypto
 ```
 
 ## Tests
@@ -101,9 +109,9 @@ pytest
 
 ## Granting Cursor access to the private repo
 
-This agent is bound to `RonaldTrunk/thin-ice-digital`. Granting the Cursor GitHub App access to `6tbwmzr522-crypto/glacifraga-trading` does **not** attach that repo to this run.
+This agent is bound to `RonaldTrunk/thin-ice-digital`. The GitHub App installation for this workspace only lists that one repository. Granting the Cursor GitHub App access to `6tbwmzr522-crypto/glacifraga-trading` does **not** attach that repo to this run — a new Cloud Agent must be started with that repository selected in the picker.
 
 1. GitHub account **`6tbwmzr522-crypto`**: [github.com/apps/cursor](https://github.com/apps/cursor) → select `glacifraga-trading` (or all repos)
 2. Cursor dashboard → [Integrations](https://cursor.com/dashboard/integrations) → GitHub connected as that account
-3. Start a **new** Cloud Agent whose repository is `6tbwmzr522-crypto/glacifraga-trading`
-4. Prompt: `Update glacifraga.com with the v5 tearsheet, English-only quote, Ltd not UG. Add the Aurora/Duke BTC sleeve.`
+3. Start a **new** Cloud Agent whose repository is `6tbwmzr522-crypto/glacifraga-trading` (it must appear in the repo picker)
+4. Prompt: `Update glacifraga.com with the v5 tearsheet, English-only quote, Ltd not UG. Add the Aurora/Duke BTC sleeve (UTC daily settlement).`

@@ -56,6 +56,13 @@ BODY_REPLACEMENTS: tuple[tuple[str, str], ...] = (
     ("<span>Risk ,000</span>", "<span>Risk $1,000</span>"),
 )
 
+OPTIONAL_BODY_REPLACEMENTS: tuple[tuple[str, str], ...] = (
+    (
+        "Duke adds BTC (Aurora).",
+        "DUKE / AURORA adds Bitcoin (fractional qty; daily bars settle 00:00 UTC).",
+    ),
+)
+
 
 class PatchError(ValueError):
     pass
@@ -78,6 +85,9 @@ def patch_homepage(html: str) -> str:
         body = body.replace(old, new, 1)
     if missing:
         raise PatchError("Live HTML did not contain expected fragments:\n- " + "\n- ".join(missing))
+    for old, new in OPTIONAL_BODY_REPLACEMENTS:
+        if old in body:
+            body = body.replace(old, new, 1)
     return head + body
 
 

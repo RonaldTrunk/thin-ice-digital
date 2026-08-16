@@ -6,7 +6,8 @@ from zoneinfo import ZoneInfo
 import httpx
 
 from app.config import Settings, get_settings
-from app.universe import is_aurora_mode, universe_for
+from app.session import CRYPTO_SCAN_UTC
+from app.universe import is_aurora_mode, normalize_symbol, universe_for
 
 ET = ZoneInfo("America/New_York")
 
@@ -24,6 +25,7 @@ def baron_status(settings: Settings | None = None) -> dict:
             "strategy": strategy,
             "paper": True,
             "scan_time_et": "16:05",
+            "crypto_scan_time_utc": CRYPTO_SCAN_UTC.strftime("%H:%M"),
             "crypto": aurora,
             "tickers": tickers,
             "equity": None,
@@ -51,6 +53,7 @@ def baron_status(settings: Settings | None = None) -> dict:
             "strategy": strategy,
             "paper": True,
             "scan_time_et": "16:05",
+            "crypto_scan_time_utc": CRYPTO_SCAN_UTC.strftime("%H:%M"),
             "crypto": aurora,
             "tickers": tickers,
             "positions": [],
@@ -63,7 +66,7 @@ def baron_status(settings: Settings | None = None) -> dict:
     for pos in positions:
         rows.append(
             {
-                "symbol": pos.get("symbol"),
+                "symbol": normalize_symbol(pos.get("symbol") or ""),
                 "qty": float(pos.get("qty") or 0),
                 "market_value": float(pos.get("market_value") or 0),
                 "unrealized_pl": float(pos.get("unrealized_pl") or 0),
@@ -77,6 +80,7 @@ def baron_status(settings: Settings | None = None) -> dict:
         "strategy": strategy,
         "paper": "paper" in base,
         "scan_time_et": "16:05",
+        "crypto_scan_time_utc": CRYPTO_SCAN_UTC.strftime("%H:%M"),
         "crypto": aurora,
         "tickers": tickers,
         "equity": float(account.get("equity") or 0),

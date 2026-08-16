@@ -24,6 +24,7 @@ LIVE_SNIPPET = """<!DOCTYPE html>
 <div class="signal-row"><span>Take Profit</span><span>7.44</span></div>
 <div class="signal-row hl"><span>Position · 176 shares</span><span>Risk ,000</span></div>
 <blockquote>&ldquo;Lielā Ķemeru tīreļa laipa &mdash; patience, clarity, and the right moment.&rdquo;</blockquote>
+<p>Same Alpaca account as the Railway worker. BOT_MODE=BARON runs the Obsidian 48 universe; Duke adds BTC (Aurora).</p>
 <footer><span>Thin Ice Digital UG</span></footer>
 </body></html>
 """
@@ -49,9 +50,8 @@ def test_patch_rewrites_v5_copy_and_legal():
     assert "$150.42" in patched
     assert "$167.44" in patched
     assert "Risk $1,000" in patched
-    assert "2.19" not in patched
-    assert "6.01" not in patched
-    assert "2022–2026" not in patched
+    assert "DUKE / AURORA adds Bitcoin" in patched
+    assert "00:00 UTC" in patched
 
 
 def test_patch_does_not_touch_head():

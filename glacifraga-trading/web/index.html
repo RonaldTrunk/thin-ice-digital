@@ -140,7 +140,7 @@ footer a:hover{color:var(--gold)}
     <div class="baron-panel-body" id="baron-panel-body">Fetching live account data…</div>
   </div>
   <p class="baron-note" style="text-align:center;max-width:720px;margin:1.5rem auto 0">
-    Same Alpaca account as the Railway worker. <code>BOT_MODE=BARON</code> runs the Obsidian 48 universe; <code>DUKE</code> / <code>AURORA</code> adds Bitcoin with fractional sizing.
+    Same Alpaca account as the Railway worker. <code>BOT_MODE=BARON</code> runs the Obsidian 48 universe (EOD 16:05 ET); <code>DUKE</code> / <code>AURORA</code> adds Bitcoin with fractional sizing (UTC daily close).
   </p>
 </section>
 
@@ -161,11 +161,11 @@ footer a:hover{color:var(--gold)}
     <article class="sleeve-card">
       <div class="sleeve-kicker">Aggressive · DUKE</div>
       <h3>Aurora + Bitcoin</h3>
-      <p>The same 20-day breakout gates on the Obsidian book, plus BTC-USD. Daily bars, 3.0× ATR trail, fractional quantity so a $100k book can still express 1% risk.</p>
+      <p>The same 20-day breakout gates on the Obsidian book, plus BTC-USD. Bitcoin daily bars settle at 00:00 UTC (scan 00:05 UTC) — not the 16:05 ET equity close. 3.0× ATR trail, fractional quantity so a $100k book can still express 1% risk.</p>
       <ul>
         <li>POST /api/v1/signals/generate with BTC, BTCUSD, or BTC-USD</li>
         <li>GET /api/v1/aurora/status (alias /api/v1/duke/status)</li>
-        <li>Yahoo daily history when Stooq is unreachable</li>
+        <li>Incomplete UTC candle is dropped so a 16:05 ET pass cannot false-breakout Bitcoin</li>
       </ul>
     </article>
   </div>
@@ -267,8 +267,10 @@ footer a:hover{color:var(--gold)}
         html += "<div class='baron-positions'>";
         d.positions.forEach((p) => {
           const pl = (p.unrealized_pl >= 0 ? "+" : "") + money(p.unrealized_pl);
+          const whole = Number.isInteger(Number(p.qty));
+          const qtyLabel = whole ? (p.qty + " sh") : String(p.qty);
           html +=
-            "<div class='baron-pos-row'><span>" + p.symbol + " · " + p.qty + " sh</span><span>" + pl + "</span></div>";
+            "<div class='baron-pos-row'><span>" + p.symbol + " · " + qtyLabel + "</span><span>" + pl + "</span></div>";
         });
         html += "</div>";
       } else {

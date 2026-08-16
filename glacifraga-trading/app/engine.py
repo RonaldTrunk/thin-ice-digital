@@ -8,6 +8,7 @@ from app.config import Settings, get_settings
 from app.indicators import atr, prior_high, rsi, sma, volume_ratio
 from app.indicators import Bar
 from app.risk import RiskPlan, position_plan
+from app.session import settled_daily_bars
 from app.universe import AssetClass, Instrument, instrument_for
 
 
@@ -95,17 +96,27 @@ def generate_signal(
 ) -> SignalResult:
     cfg = settings or get_settings()
     inst = instrument or instrument_for(symbol)
-    stamp = (as_of or datetime.now(timezone.utc)).isoformat()
-    if len(bars) < cfg.sma_period + 1:
+    stamp_dt = as_of or datetime.now(timezone.utc)
+    stamp = stamp_dt.isoformat()
+    series, dropped_intraday = settled_daily_bars(bars, inst, now=stamp_dt)
+    if len(series) < cfg.sma_period + 1:
         return SignalResult(
             symbol=inst.symbol,
             signal="HOLD",
             confidence=0.0,
-            price=bars[-1].close if bars else 0.0,
-            reason=f"Insufficient history ({len(bars)} bars; need {cfg.sma_period + 1}).",
+            price=series[-1].close if series else (bars[-1].close if bars else 0.0),
+            reason=f"Insufficient history ({len(series)} bars; need {cfg.sma_period + 1}).",
             timestamp=stamp,
-            audit={"bars": len(bars), "required": cfg.sma_period + 1},
+            audit={
+                "bars": len(series),
+                "required": cfg.sma_period + 1,
+                "session": {
+                    "dropped_intraday": dropped_intraday,
+                    "last_complete": None if not series else series[-1].date.isoformat(),
+                },
+            },
         )
+    bars = series
 
     closes = [b.close for b in bars]
     highs = [b.high for b in bars]
@@ -214,6 +225,12 @@ def generate_signal(
             "qty": None if plan is None else plan.qty,
         },
         "gates": failures,
+        "session": {
+            "dropped_intraday": dropped_intraday,
+            "bar_count": len(bars),
+            "last_complete": bars[-1].date.isoformat(),
+            "crypto_utc_close": inst.asset_class == AssetClass.CRYPTO,
+        },
     }
 
     return SignalResult(
