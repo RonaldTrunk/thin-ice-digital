@@ -1,3 +1,9 @@
+"""API request/response models.
+
+Production uses a package at app/models/ (not app/models.py).
+Python prefers the folder, which is why uploading models.py alone crashed Railway.
+"""
+
 from __future__ import annotations
 
 from pydantic import BaseModel, Field
@@ -6,6 +12,8 @@ from pydantic import BaseModel, Field
 class SignalRequest(BaseModel):
     symbol: str
     account_size: float = Field(default=100_000.0, gt=0)
+
+    model_config = {"extra": "allow"}
 
 
 class SignalResponse(BaseModel):

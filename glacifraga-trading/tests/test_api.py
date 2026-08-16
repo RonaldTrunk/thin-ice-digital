@@ -10,6 +10,14 @@ def test_universe_size():
     assert len(OBSIDIAN) == 48
 
 
+def test_signal_models_import_from_package():
+    from app.models import SignalRequest, SignalResponse
+
+    req = SignalRequest(symbol="BTC-USD")
+    assert req.account_size == 100_000.0
+    assert SignalResponse.__name__ == "SignalResponse"
+
+
 def test_health_and_universe():
     client = TestClient(create_app(Settings(api_key=None, bot_mode="BARON")))
     health = client.get("/api/v1/health").json()
