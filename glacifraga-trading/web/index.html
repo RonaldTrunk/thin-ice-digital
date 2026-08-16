@@ -130,17 +130,25 @@ footer a:hover{color:var(--gold)}
 </section>
 
 <section class="baron-live-section" id="baron-live">
-  <p class="section-label">Live Paper Trading</p>
+  <p class="section-label">Obsidian performance</p>
   <h2 class="section-title">Glacifraga Obsidian</h2>
   <div class="baron-panel">
     <div class="baron-panel-header">
-      <span class="baron-panel-title">Alpaca paper · 48 tickers · EOD scan 16:05 ET</span>
-      <span class="baron-status-pill" id="baron-status-pill">Loading…</span>
+      <span class="baron-panel-title">48 tickers · 2017–24 Jul 2026 · $100k start</span>
+      <span class="baron-status-pill" id="baron-status-pill">Tearsheet v5</span>
     </div>
-    <div class="baron-panel-body" id="baron-panel-body">Fetching live account data…</div>
+    <div class="baron-panel-body" id="baron-panel-body">
+      <div class="baron-grid">
+        <div class="baron-metric"><div class="baron-metric-label">CAGR</div><div class="baron-metric-value">+22.0%</div></div>
+        <div class="baron-metric"><div class="baron-metric-label">Sharpe</div><div class="baron-metric-value">2.65</div></div>
+        <div class="baron-metric"><div class="baron-metric-label">Max DD</div><div class="baron-metric-value">−7.1%</div></div>
+        <div class="baron-metric"><div class="baron-metric-label">Net P&amp;L</div><div class="baron-metric-value">$619k</div></div>
+      </div>
+      <p class="baron-note">Backtested Obsidian 48. Win rate ~61% · profit factor 1.95 · Sortino 4.20. $618,591 on $100k. Not indicative of future results.</p>
+    </div>
   </div>
   <p class="baron-note" style="text-align:center;max-width:720px;margin:1.5rem auto 0">
-    Same Alpaca account as the Railway worker. <code>BOT_MODE=BARON</code> runs the Obsidian 48 universe (EOD 16:05 ET); <code>DUKE</code> / <code>AURORA</code> adds Bitcoin with fractional sizing (UTC daily close).
+    Conservative sleeve: equities and commodities, cash-funded, no leverage. Aurora adds Bitcoin on <code>BOT_MODE=DUKE</code>.
   </p>
 </section>
 
@@ -248,10 +256,6 @@ footer a:hover{color:var(--gold)}
     .then((r) => r.json())
     .then((d) => {
       if (!d.linked) {
-        pill.textContent = "Worker separate";
-        body.innerHTML =
-          "<p>Baron runs on Railway (<code>baron-worker</code>). Add Alpaca keys on the <strong>web</strong> service to mirror live positions here.</p>" +
-          (d.message ? "<p class='baron-note'>" + d.message + "</p>" : "");
         return;
       }
       pill.textContent = "Live · Paper";
@@ -276,13 +280,10 @@ footer a:hover{color:var(--gold)}
       } else {
         html += "<p>No open positions right now.</p>";
       }
-      html += "<p class='baron-note'>Updated " + new Date(d.as_of_et).toLocaleString("en-US", { timeZone: "America/New_York" }) + " ET</p>";
+      html += "<p class='baron-note'>Alpaca paper · updated " + new Date(d.as_of_et).toLocaleString("en-US", { timeZone: "America/New_York" }) + " ET</p>";
       body.innerHTML = html;
     })
-    .catch(() => {
-      pill.textContent = "Offline";
-      body.textContent = "Could not reach Baron status API.";
-    });
+    .catch(() => {});
 })();
 </script>
 </body>
