@@ -148,7 +148,7 @@ footer a:hover{color:var(--gold)}
     </div>
   </div>
   <p class="baron-note" style="text-align:center;max-width:720px;margin:1.5rem auto 0">
-    Conservative sleeve: equities and commodities, cash-funded, no leverage. Aurora adds Bitcoin on <code>BOT_MODE=DUKE</code>.
+    Conservative sleeve: 48 equities and commodities, cash-funded, no leverage. Aurora is the same book plus Bitcoin.
   </p>
 </section>
 
@@ -157,23 +157,23 @@ footer a:hover{color:var(--gold)}
   <h2 class="section-title">Obsidian and Aurora</h2>
   <div class="sleeves-grid">
     <article class="sleeve-card">
-      <div class="sleeve-kicker">Conservative · BARON</div>
+      <div class="sleeve-kicker">Conservative</div>
       <h3>Obsidian 48</h3>
-      <p>Equities and commodities. No crypto. EOD scan 16:05 ET. The v5 tearsheet above is this book — 2017–24 Jul 2026.</p>
+      <p>Equities and commodities. No crypto. The published book: 2017–24 Jul 2026, +22.0% CAGR, Sharpe 2.65, −7.1% max drawdown, $618,591 on $100k.</p>
       <ul>
         <li>48 names, cash-funded, no leverage</li>
-        <li>Trail 2.5× ATR on equities, 3.0× on commodities</li>
-        <li>Whole-share sizing, 1% AUM risk, 10% cap</li>
+        <li>1% risk per name, ~10% position cap</li>
+        <li>~61% win rate · profit factor 1.95</li>
       </ul>
     </article>
     <article class="sleeve-card">
-      <div class="sleeve-kicker">Aggressive · DUKE</div>
+      <div class="sleeve-kicker">Aggressive</div>
       <h3>Aurora + Bitcoin</h3>
-      <p>The same 20-day breakout gates on the Obsidian book, plus BTC-USD. Bitcoin daily bars settle at 00:00 UTC (scan 00:05 UTC) — not the 16:05 ET equity close. 3.0× ATR trail, fractional quantity so a $100k book can still express 1% risk.</p>
+      <p>The same breakout and risk rules, with Bitcoin sized in fractions of a coin so a $100k book can still take a 1% risk.</p>
       <ul>
-        <li>POST /api/v1/signals/generate with BTC, BTCUSD, or BTC-USD</li>
-        <li>GET /api/v1/aurora/status (alias /api/v1/duke/status)</li>
-        <li>Incomplete UTC candle is dropped so a 16:05 ET pass cannot false-breakout Bitcoin</li>
+        <li>Obsidian 48 plus BTC</li>
+        <li>Wider 3.0× ATR trail on Bitcoin</li>
+        <li>Same 1% risk, no leverage</li>
       </ul>
     </article>
   </div>

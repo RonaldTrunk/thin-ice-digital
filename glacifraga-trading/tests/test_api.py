@@ -128,6 +128,9 @@ def test_home_page_has_v5_copy():
     assert "ALPACA_API_KEY" not in html
     assert "Tearsheet v5" in html
     assert "−7.1%" in html
+    assert "EOD scan" not in html
+    assert "BOT_MODE" not in html
+    assert "/api/v1/aurora/status" not in html
     hero = client.get("/assets/kemeru-hero.png")
     assert hero.status_code == 200
     assert len(hero.content) > 10_000
