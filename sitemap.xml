@@ -1,16 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://thinicedigital.com/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thinicedigital.com/"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://thinicedigital.com/?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://thinicedigital.com/?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://thinicedigital.com/?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://thinicedigital.com/?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://thinicedigital.com/?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="lv" href="https://thinicedigital.com/?lang=lv"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://thinicedigital.com/?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thinicedigital.com/"/>
   </url>
   <url>
     <loc>https://thinicedigital.com/impressum.html</loc>
     <changefreq>yearly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thinicedigital.com/impressum.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://thinicedigital.com/impressum.html?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://thinicedigital.com/impressum.html?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://thinicedigital.com/impressum.html?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://thinicedigital.com/impressum.html?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://thinicedigital.com/impressum.html?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="lv" href="https://thinicedigital.com/impressum.html?lang=lv"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://thinicedigital.com/impressum.html?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thinicedigital.com/impressum.html"/>
   </url>
   <url>
     <loc>https://thinicedigital.com/privacy.html</loc>
     <changefreq>yearly</changefreq>
+    <xhtml:link rel="alternate" hreflang="en" href="https://thinicedigital.com/privacy.html"/>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://thinicedigital.com/privacy.html?lang=fr"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://thinicedigital.com/privacy.html?lang=es"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://thinicedigital.com/privacy.html?lang=it"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://thinicedigital.com/privacy.html?lang=ja"/>
+    <xhtml:link rel="alternate" hreflang="pt" href="https://thinicedigital.com/privacy.html?lang=pt"/>
+    <xhtml:link rel="alternate" hreflang="lv" href="https://thinicedigital.com/privacy.html?lang=lv"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://thinicedigital.com/privacy.html?lang=de"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://thinicedigital.com/privacy.html"/>
   </url>
 </urlset>
