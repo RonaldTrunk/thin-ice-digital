@@ -74,6 +74,7 @@ body:has(.page-main) .site-header{
   font-size:10px;font-weight:400;
   letter-spacing:0.32em;text-transform:uppercase;
 }
+.header-tools{display:flex;align-items:center;gap:1.1rem}
 .site-nav{display:flex;align-items:center;gap:1.5rem}
 .site-nav a{
   font-size:10px;font-weight:400;
@@ -83,6 +84,57 @@ body:has(.page-main) .site-header{
   transition:color 0.2s;
 }
 .site-nav a:hover,.site-nav a:focus-visible{color:var(--gold)}
+.lang-switch{position:relative}
+.lang-switch summary{
+  list-style:none;cursor:pointer;
+  font-family:"Jost",sans-serif;
+  font-size:10px;font-weight:400;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--gold);
+  border:1px solid rgba(201,169,110,0.35);
+  padding:0.28rem 0.55rem;
+  background:rgba(8,12,18,0.45);
+}
+.lang-switch summary::-webkit-details-marker{display:none}
+.lang-switch summary::marker{content:""}
+.lang-switch summary:hover,.lang-switch[open] summary{
+  border-color:var(--gold);color:var(--white);
+}
+.lang-menu{
+  position:absolute;right:0;top:calc(100% + 0.4rem);
+  min-width:11.5rem;
+  background:#0a1018;
+  border:1px solid rgba(201,169,110,0.28);
+  z-index:40;padding:0.25rem 0;
+}
+.lang-menu button{
+  display:block;width:100%;text-align:left;
+  background:none;border:0;
+  color:var(--muted);
+  font-family:"Jost",sans-serif;
+  font-size:12px;letter-spacing:0.04em;
+  padding:0.45rem 0.85rem;cursor:pointer;
+}
+.lang-menu button:hover,.lang-menu button[aria-current="true"]{
+  color:var(--gold);background:rgba(201,169,110,0.08);
+}
+html[lang="ja"] body{
+  font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,"Jost",sans-serif;
+}
+html[lang="ja"] h1,
+html[lang="ja"] .section-title,
+html[lang="ja"] .tagline,
+html[lang="ja"] .product-name,
+html[lang="ja"] .product-tagline,
+html[lang="ja"] .cta-section h2,
+html[lang="ja"] .lane h3,
+html[lang="ja"] .page-lead,
+html[lang="ja"] .stat-value,
+html[lang="ja"] .philosophy-number,
+html[lang="ja"] .legal h2{
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Hiragino Sans",serif;
+  letter-spacing:0.02em;
+}
 .hero{
   position:relative;
   min-height:100vh;
@@ -396,6 +448,7 @@ footer a:hover,footer a:focus-visible{color:var(--gold)}
   .stat-card:nth-child(-n+2){border-bottom:1px solid rgba(201,169,110,0.08)}
   .site-nav{gap:0.9rem}
   .brand-text{letter-spacing:0.22em}
+  .header-tools{gap:0.7rem}
 }
 @media (max-width:520px){
   .site-header{padding:0 1rem}

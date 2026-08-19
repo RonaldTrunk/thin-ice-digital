@@ -1,11 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page="home">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Thin Ice Digital — Software for markets that reward discipline</title>
 <meta name="description" content="Thin Ice Digital Ltd — Oxford, UK. Software for markets that reward discipline. Runnr for retail traders, Glacifraga for institutions.">
 <link rel="canonical" href="https://thinicedigital.com/">
+<link rel="alternate" hreflang="en" href="https://thinicedigital.com/">
+<link rel="alternate" hreflang="fr" href="https://thinicedigital.com/?lang=fr">
+<link rel="alternate" hreflang="es" href="https://thinicedigital.com/?lang=es">
+<link rel="alternate" hreflang="it" href="https://thinicedigital.com/?lang=it">
+<link rel="alternate" hreflang="ja" href="https://thinicedigital.com/?lang=ja">
+<link rel="alternate" hreflang="pt" href="https://thinicedigital.com/?lang=pt">
+<link rel="alternate" hreflang="lv" href="https://thinicedigital.com/?lang=lv">
+<link rel="alternate" hreflang="de" href="https://thinicedigital.com/?lang=de">
+<link rel="alternate" hreflang="x-default" href="https://thinicedigital.com/">
 <meta name="theme-color" content="#080c12">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Thin Ice Digital">
@@ -39,7 +48,7 @@
 </script>
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 <div class="grain" aria-hidden="true"></div>
 
 <header class="site-header">
@@ -47,11 +56,14 @@
     <span class="brand-mark" aria-hidden="true"></span>
     <span class="brand-text">Thin Ice Digital</span>
   </a>
-  <nav class="site-nav" aria-label="Primary">
-    <a href="#products">Products</a>
-    <a href="#philosophy">Philosophy</a>
-    <a href="#contact">Contact</a>
-  </nav>
+  <div class="header-tools">
+    <nav class="site-nav" data-i18n-aria="nav.aria" aria-label="Primary">
+      <a href="#products" data-i18n="nav.products">Products</a>
+      <a href="#philosophy" data-i18n="nav.philosophy">Philosophy</a>
+      <a href="#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div data-lang-switch></div>
+  </div>
 </header>
 
 <main id="main">
@@ -64,75 +76,75 @@
       <div class="logo-text">Thin Ice Digital</div>
       <div class="logo-mark"></div>
     </div>
-    <h1>Software for markets<br>that reward <em>discipline</em></h1>
-    <p class="tagline">Two focused products for traders and institutions.<br>Oxford, UK.</p>
+    <h1 data-i18n-html="hero.title">Software for markets<br>that reward <em>discipline</em></h1>
+    <p class="tagline" data-i18n-html="hero.tagline">Two focused products for traders and institutions.<br>Oxford, UK.</p>
     <div class="cta-row">
-      <a href="#products" class="btn-primary">Our Products</a>
-      <a href="mailto:info@thinicedigital.com" class="btn-secondary">Contact</a>
+      <a href="#products" class="btn-primary" data-i18n="hero.products">Our Products</a>
+      <a href="mailto:info@thinicedigital.com" class="btn-secondary" data-i18n="hero.contact">Contact</a>
     </div>
   </div>
   <div class="scroll-hint">
     <div class="scroll-line"></div>
-    <span>Explore</span>
+    <span data-i18n="hero.explore">Explore</span>
   </div>
 </div>
 
 <section class="stats-section">
   <p class="section-label">Thin Ice Digital Ltd</p>
-  <h2 class="section-title">Built with patience, tested with rigour</h2>
+  <h2 class="section-title" data-i18n="stats.title">Built with patience, tested with rigour</h2>
   <div class="stats-grid">
     <div class="stat-card">
       <div class="stat-value">2026</div>
-      <div class="stat-label">Founded</div>
-      <div class="stat-sub">Est. Oxford</div>
+      <div class="stat-label" data-i18n="stats.founded">Founded</div>
+      <div class="stat-sub" data-i18n="stats.foundedSub">Est. Oxford</div>
     </div>
     <div class="stat-card">
       <div class="stat-value">Oxford</div>
-      <div class="stat-label">Home</div>
-      <div class="stat-sub">United Kingdom</div>
+      <div class="stat-label" data-i18n="stats.home">Home</div>
+      <div class="stat-sub" data-i18n="stats.homeSub">United Kingdom</div>
     </div>
     <div class="stat-card">
       <div class="stat-value">2</div>
-      <div class="stat-label">Products</div>
-      <div class="stat-sub">Retail &amp; institutional</div>
+      <div class="stat-label" data-i18n="stats.products">Products</div>
+      <div class="stat-sub" data-i18n-html="stats.productsSub">Retail &amp; institutional</div>
     </div>
     <div class="stat-card">
       <div class="stat-value">1</div>
-      <div class="stat-label">Philosophy</div>
-      <div class="stat-sub">Discipline is the edge</div>
+      <div class="stat-label" data-i18n="stats.philosophy">Philosophy</div>
+      <div class="stat-sub" data-i18n="stats.philosophySub">Discipline is the edge</div>
     </div>
   </div>
 </section>
 
 <section class="products-section" id="products">
-  <p class="section-label">Products</p>
-  <h2 class="section-title">One company, two audiences</h2>
+  <p class="section-label" data-i18n="products.kicker">Products</p>
+  <h2 class="section-title" data-i18n="products.title">One company, two audiences</h2>
   <div class="products-grid">
     <article class="product-card runnr">
-      <div class="product-audience">Retail · B2C</div>
+      <div class="product-audience" data-i18n="runnr.audience">Retail · B2C</div>
       <h3 class="product-name">Runnr</h3>
-      <p class="product-tagline">Discipline before alpha.</p>
-      <p class="product-desc">A mobile-first discipline system for retail traders — daily rules, streaks, coach digests, and Baron-inspired risk framing. Built for the trader who knows the strategy but needs the habit.</p>
+      <p class="product-tagline" data-i18n="runnr.tagline">Discipline before alpha.</p>
+      <p class="product-desc" data-i18n="runnr.desc">A mobile-first discipline system for retail traders — daily rules, streaks, coach digests, and Baron-inspired risk framing. Built for the trader who knows the strategy but needs the habit.</p>
       <ul class="feature-list">
-        <li>Daily rules, streaks, and coach digests</li>
-        <li>Position sizing, journal, and watchlist</li>
-        <li>Broker sync and CSV import</li>
-        <li>Shareable discipline cards — not P&amp;L flexes</li>
+        <li data-i18n="runnr.f1">Daily rules, streaks, and coach digests</li>
+        <li data-i18n="runnr.f2">Position sizing, journal, and watchlist</li>
+        <li data-i18n="runnr.f3">Broker sync and CSV import</li>
+        <li data-i18n-html="runnr.f4">Shareable discipline cards — not P&amp;L flexes</li>
       </ul>
-      <a href="https://runnr.fyi" class="product-link" target="_blank" rel="noopener">Visit runnr.fyi →</a>
+      <a href="https://runnr.fyi" class="product-link" target="_blank" rel="noopener" data-i18n="runnr.link">Visit runnr.fyi →</a>
     </article>
     <article class="product-card glacifraga">
-      <div class="product-audience">Institutional · B2B</div>
+      <div class="product-audience" data-i18n="glaci.audience">Institutional · B2B</div>
       <h3 class="product-name">Glacifraga</h3>
-      <p class="product-tagline">Signals with an audit trail.</p>
-      <p class="product-desc">White-label breakout signals, ATR risk management, and a live reference book — Baron von Richstone on paper. Clean REST API for partners who need institutional-grade logic, not black boxes.</p>
+      <p class="product-tagline" data-i18n="glaci.tagline">Signals with an audit trail.</p>
+      <p class="product-desc" data-i18n="glaci.desc">White-label breakout signals, ATR risk management, and a live reference book — Baron von Richstone on paper. Clean REST API for partners who need institutional-grade logic, not black boxes.</p>
       <ul class="feature-list">
-        <li>20-day breakouts with RSI, volume, and regime checks</li>
-        <li>ATR stops, targets, and 1% risk sizing</li>
-        <li>VIX regime filter and confidence scoring</li>
-        <li>White-label REST API with an explainable trail</li>
+        <li data-i18n="glaci.f1">20-day breakouts with RSI, volume, and regime checks</li>
+        <li data-i18n="glaci.f2">ATR stops, targets, and 1% risk sizing</li>
+        <li data-i18n="glaci.f3">VIX regime filter and confidence scoring</li>
+        <li data-i18n="glaci.f4">White-label REST API with an explainable trail</li>
       </ul>
-      <a href="https://glacifraga.com" class="product-link" target="_blank" rel="noopener">Visit glacifraga.com →</a>
+      <a href="https://glacifraga.com" class="product-link" target="_blank" rel="noopener" data-i18n="glaci.link">Visit glacifraga.com →</a>
     </article>
   </div>
 </section>
@@ -142,47 +154,47 @@
 </section>
 
 <section class="philosophy-section" id="philosophy">
-  <p class="section-label">Philosophy</p>
-  <h2 class="section-title">What we believe</h2>
+  <p class="section-label" data-i18n="philo.kicker">Philosophy</p>
+  <h2 class="section-title" data-i18n="philo.title">What we believe</h2>
   <div class="philosophy-grid">
     <div class="philosophy-card">
       <div class="philosophy-number">01</div>
-      <div class="philosophy-title">Discipline first</div>
-      <p class="philosophy-desc">Markets reward consistency over excitement. Every product we ship is built around habits, risk limits, and patience — not hype.</p>
+      <div class="philosophy-title" data-i18n="philo.1t">Discipline first</div>
+      <p class="philosophy-desc" data-i18n="philo.1d">Markets reward consistency over excitement. Every product we ship is built around habits, risk limits, and patience — not hype.</p>
     </div>
     <div class="philosophy-card">
       <div class="philosophy-number">02</div>
-      <div class="philosophy-title">Explain every decision</div>
-      <p class="philosophy-desc">Signals come with context — RSI, volume, regime, stops. Partners and traders deserve to understand why, not just what.</p>
+      <div class="philosophy-title" data-i18n="philo.2t">Explain every decision</div>
+      <p class="philosophy-desc" data-i18n="philo.2d">Signals come with context — RSI, volume, regime, stops. Partners and traders deserve to understand why, not just what.</p>
     </div>
     <div class="philosophy-card">
       <div class="philosophy-number">03</div>
-      <div class="philosophy-title">Thin ice, deep water</div>
-      <p class="philosophy-desc">We build carefully on volatile ground. Small teams, focused scope, Oxford pragmatism — no feature bloat, no borrowed confidence.</p>
+      <div class="philosophy-title" data-i18n="philo.3t">Thin ice, deep water</div>
+      <p class="philosophy-desc" data-i18n="philo.3d">We build carefully on volatile ground. Small teams, focused scope, Oxford pragmatism — no feature bloat, no borrowed confidence.</p>
     </div>
   </div>
 </section>
 
 <section class="cta-section" id="contact">
-  <h2>Work with us</h2>
-  <p>Institutional pilot partnerships, API access, and press enquiries welcome. Retail traders — start with Runnr. Institutions — explore Glacifraga.</p>
+  <h2 data-i18n="cta.title">Work with us</h2>
+  <p data-i18n="cta.lead">Institutional pilot partnerships, API access, and press enquiries welcome. Retail traders — start with Runnr. Institutions — explore Glacifraga.</p>
   <div class="lanes">
     <article class="lane retail">
-      <div class="lane-kicker">Retail</div>
-      <h3>Start with Runnr</h3>
-      <p>Journal, size, and stay on the rules. Built for the trader who already has a method and needs the habit to hold.</p>
-      <a class="lane-link" href="https://runnr.fyi" target="_blank" rel="noopener">Open runnr.fyi →</a>
+      <div class="lane-kicker" data-i18n="cta.retail">Retail</div>
+      <h3 data-i18n="cta.runnrTitle">Start with Runnr</h3>
+      <p data-i18n="cta.runnrDesc">Journal, size, and stay on the rules. Built for the trader who already has a method and needs the habit to hold.</p>
+      <a class="lane-link" href="https://runnr.fyi" target="_blank" rel="noopener" data-i18n="cta.runnrLink">Open runnr.fyi →</a>
     </article>
     <article class="lane inst">
-      <div class="lane-kicker">Institutional</div>
-      <h3>Pilot Glacifraga</h3>
-      <p>White-label signals, ATR risk, and a documented API. For partners who need the logic on paper, not a black box.</p>
-      <a class="lane-link" href="https://glacifraga.com/docs" target="_blank" rel="noopener">API documentation →</a>
+      <div class="lane-kicker" data-i18n="cta.inst">Institutional</div>
+      <h3 data-i18n="cta.glaciTitle">Pilot Glacifraga</h3>
+      <p data-i18n="cta.glaciDesc">White-label signals, ATR risk, and a documented API. For partners who need the logic on paper, not a black box.</p>
+      <a class="lane-link" href="https://glacifraga.com" target="_blank" rel="noopener" data-i18n="cta.glaciLink">Open glacifraga.com →</a>
     </article>
   </div>
   <div class="cta-row is-static">
     <a href="mailto:info@thinicedigital.com" class="btn-primary">info@thinicedigital.com</a>
-    <a href="https://glacifraga.com" class="btn-secondary" target="_blank" rel="noopener">Glacifraga live</a>
+    <a href="https://glacifraga.com" class="btn-secondary" target="_blank" rel="noopener" data-i18n="cta.live">Glacifraga live</a>
   </div>
 </section>
 </main>
@@ -192,11 +204,11 @@
   <div class="footer-links">
     <a href="https://runnr.fyi" target="_blank" rel="noopener">Runnr</a>
     <a href="https://glacifraga.com" target="_blank" rel="noopener">Glacifraga</a>
-    <a href="mailto:info@thinicedigital.com">Contact</a>
+    <a href="mailto:info@thinicedigital.com" data-i18n="footer.contact">Contact</a>
     <a href="impressum.html">Impressum</a>
-    <a href="privacy.html">Privacy</a>
+    <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
   </div>
 </footer>
-
+<script src="js/i18n.js" defer></script>
 </body>
 </html>

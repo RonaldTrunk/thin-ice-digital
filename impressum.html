@@ -1,64 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page="impressum">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Legal notice — Thin Ice Digital</title>
 <meta name="description" content="Legal notice for Thin Ice Digital Ltd, Oxford, UK.">
 <link rel="canonical" href="https://thinicedigital.com/impressum.html">
+<link rel="alternate" hreflang="en" href="https://thinicedigital.com/impressum.html">
+<link rel="alternate" hreflang="fr" href="https://thinicedigital.com/impressum.html?lang=fr">
+<link rel="alternate" hreflang="es" href="https://thinicedigital.com/impressum.html?lang=es">
+<link rel="alternate" hreflang="it" href="https://thinicedigital.com/impressum.html?lang=it">
+<link rel="alternate" hreflang="ja" href="https://thinicedigital.com/impressum.html?lang=ja">
+<link rel="alternate" hreflang="pt" href="https://thinicedigital.com/impressum.html?lang=pt">
+<link rel="alternate" hreflang="lv" href="https://thinicedigital.com/impressum.html?lang=lv">
+<link rel="alternate" hreflang="de" href="https://thinicedigital.com/impressum.html?lang=de">
+<link rel="alternate" hreflang="x-default" href="https://thinicedigital.com/impressum.html">
 <meta name="theme-color" content="#080c12">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/fonts.css">
 <link rel="stylesheet" href="css/site.css">
 </head>
 <body>
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 <div class="grain" aria-hidden="true"></div>
 <header class="site-header">
   <a class="brand" href="index.html">
     <span class="brand-mark" aria-hidden="true"></span>
     <span class="brand-text">Thin Ice Digital</span>
   </a>
-  <nav class="site-nav" aria-label="Primary">
-    <a href="index.html#products">Products</a>
-    <a href="index.html#philosophy">Philosophy</a>
-    <a href="index.html#contact">Contact</a>
-  </nav>
+  <div class="header-tools">
+    <nav class="site-nav" data-i18n-aria="nav.aria" aria-label="Primary">
+      <a href="index.html#products" data-i18n="nav.products">Products</a>
+      <a href="index.html#philosophy" data-i18n="nav.philosophy">Philosophy</a>
+      <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div data-lang-switch></div>
+  </div>
 </header>
 
 <main id="main" class="page-main legal">
-  <p class="page-kicker">Legal notice</p>
-  <h1>Impressum</h1>
-  <p class="page-lead">Thin Ice Digital Ltd — Oxford, United Kingdom.</p>
+  <p class="page-kicker" data-i18n="imp.kicker">Legal notice</p>
+  <h1 data-i18n="imp.title">Impressum</h1>
+  <p class="page-lead" data-i18n="imp.lead">Thin Ice Digital Ltd — Oxford, United Kingdom.</p>
 
-  <h2>Company</h2>
+  <h2 data-i18n="imp.company">Company</h2>
   <address>
     Thin Ice Digital Ltd<br>
     Oxford, United Kingdom
   </address>
-  <p>Email: <a href="mailto:info@thinicedigital.com">info@thinicedigital.com</a></p>
+  <p><span data-i18n="imp.email">Email:</span> <a href="mailto:info@thinicedigital.com">info@thinicedigital.com</a></p>
 
-  <div class="note">
+  <div class="note" data-i18n="imp.note">
     Full registered address and Companies House details will be published here once the filing is complete. Until then, reach us at the email above.
   </div>
 
-  <h3>Contact</h3>
-  <p>Product, partnership, and press enquiries: <a href="mailto:info@thinicedigital.com">info@thinicedigital.com</a></p>
+  <h3 data-i18n="imp.contactH">Contact</h3>
+  <p><span data-i18n="imp.contactP">Product, partnership, and press enquiries:</span> <a href="mailto:info@thinicedigital.com">info@thinicedigital.com</a></p>
 
-  <h3>Responsible for content</h3>
-  <p>Thin Ice Digital Ltd, Oxford, UK</p>
+  <h3 data-i18n="imp.respH">Responsible for content</h3>
+  <p data-i18n="imp.respP">Thin Ice Digital Ltd, Oxford, UK</p>
 
-  <h3>Links</h3>
-  <p>This site links to Runnr and Glacifraga. We are not responsible for the content of those products; their operators are.</p>
+  <h3 data-i18n="imp.linksH">Links</h3>
+  <p data-i18n="imp.linksP">This site links to Runnr and Glacifraga. We are not responsible for the content of those products; their operators are.</p>
 </main>
 
 <footer>
   <span>&copy; 2026 Thin Ice Digital Ltd</span>
   <div class="footer-links">
-    <a href="index.html">Home</a>
+    <a href="index.html" data-i18n="footer.home">Home</a>
     <a href="impressum.html">Impressum</a>
-    <a href="privacy.html">Privacy</a>
+    <a href="privacy.html" data-i18n="footer.privacy">Privacy</a>
   </div>
 </footer>
+<script src="js/i18n.js" defer></script>
 </body>
 </html>

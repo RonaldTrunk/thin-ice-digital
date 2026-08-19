@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-page="error">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,17 +17,21 @@
     <span class="brand-mark" aria-hidden="true"></span>
     <span class="brand-text">Thin Ice Digital</span>
   </a>
-  <nav class="site-nav" aria-label="Primary">
-    <a href="index.html#products">Products</a>
-    <a href="index.html#philosophy">Philosophy</a>
-    <a href="index.html#contact">Contact</a>
-  </nav>
+  <div class="header-tools">
+    <nav class="site-nav" data-i18n-aria="nav.aria" aria-label="Primary">
+      <a href="index.html#products" data-i18n="nav.products">Products</a>
+      <a href="index.html#philosophy" data-i18n="nav.philosophy">Philosophy</a>
+      <a href="index.html#contact" data-i18n="nav.contact">Contact</a>
+    </nav>
+    <div data-lang-switch></div>
+  </div>
 </header>
 <main class="page-main error-page">
   <p class="page-kicker">404</p>
-  <h1>Thin ice.<br>No path here.</h1>
-  <p>That page is not on this site. The boardwalk is still on the homepage.</p>
-  <a class="btn-primary" href="index.html">Back to Thin Ice Digital</a>
+  <h1 data-i18n-html="err.title">Thin ice.<br>No path here.</h1>
+  <p data-i18n="err.body">That page is not on this site. The boardwalk is still on the homepage.</p>
+  <a class="btn-primary" href="index.html" data-i18n="err.back">Back to Thin Ice Digital</a>
 </main>
+<script src="js/i18n.js" defer></script>
 </body>
 </html>
