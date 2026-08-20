@@ -103,18 +103,22 @@ def scene_bg(t: float, gold_y: float = 0.0, accent_y: float = 0.85) -> Image.Ima
 
 def draw_centered(draw, text, y, fnt, fill=TEXT, max_width=None):
     if max_width:
-        words = text.split()
-        lines, cur = [], ""
-        for w in words:
-            trial = f"{cur} {w}".strip()
-            if draw.textlength(trial, font=fnt) <= max_width:
-                cur = trial
-            else:
-                if cur:
-                    lines.append(cur)
-                cur = w
-        if cur:
-            lines.append(cur)
+        lines = []
+        for paragraph in text.split("\n"):
+            words = paragraph.split()
+            if not words:
+                continue
+            cur = ""
+            for w in words:
+                trial = f"{cur} {w}".strip()
+                if draw.textlength(trial, font=fnt) <= max_width:
+                    cur = trial
+                else:
+                    if cur:
+                        lines.append(cur)
+                    cur = w
+            if cur:
+                lines.append(cur)
     else:
         lines = text.split("\n")
     line_h = int(fnt.size * 1.2)
@@ -557,7 +561,7 @@ DE = {
     "edge3": "bis sie es tut.",
     "ver1": "Version eins.",
     "ver2": "Es ist erst der Anfang.",
-    "inst": "Institutionelle Gewohnheiten.\nOhne den institutionellen Stack.",
+    "inst": "Institutionelle Gewohnheiten.\nOhne den Stack.",
     "cta": "Jetzt starten",
     "tag": "Disziplin statt Dopamin",
     # scene end times — calm DE Conrad VTT (~94s)
@@ -671,7 +675,8 @@ def render_frame(i: int, lang: str = "en") -> Image.Image:
         draw_centered(draw, S["ver2"], H // 2 + 50, font("body", 28), GOLD_LIGHT)
 
     elif t < ends[15]:
-        draw_centered(draw, S["inst"], H // 2, font("head", 48), TEXT, max_width=1500)
+        # Keep lines within ~580px so 9:16 center-crop does not clip text.
+        draw_centered(draw, S["inst"], H // 2, font("head", 40 if lang == "de" else 44), TEXT)
 
     else:
         # Big pulsing CTA
