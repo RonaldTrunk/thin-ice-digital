@@ -6,8 +6,8 @@ Horizon-style product launch advert for [Runnr](https://runnr.fyi/) — the disc
 
 | File | Description |
 |------|-------------|
-| `output/runnr-advert.mp4` | English (~65s) · punchier Ryan + rising bed + pulse CTA |
-| `output/runnr-advert-de.mp4` | German (~94s) · calm de-DE Conrad (−8% rate) |
+| `output/runnr-advert.mp4` | English (~62s) · punchier Ryan + rising bed + pulse CTA |
+| `output/runnr-advert-de.mp4` | German (~89s) · calm de-DE Conrad (−8% rate) |
 | `output/runnr-advert-*-9x16.mp4` | Vertical crops |
 | `assets/narration.vtt` | Timed captions |
 | `scripts/narration.txt` | Script |

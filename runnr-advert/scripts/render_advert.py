@@ -21,14 +21,14 @@ FPS = 30
 # Per-language duration / audio / output naming
 LANG_CFG = {
     "en": {
-        "duration": 65.0,
+        "duration": 62.0,
         "audio": "narration.mp3",
         "bed": "bed-rising.mp3",
         "out": "runnr-advert",
         "frames": "frames",
     },
     "de": {
-        "duration": 95.0,
+        "duration": 90.0,
         "audio": "narration-de.mp3",
         "bed": "bed-rising.mp3",
         "out": "runnr-advert-de",
@@ -524,13 +524,11 @@ EN = {
     "edge1": "Your edge works.",
     "edge2": "Your discipline doesn't —",
     "edge3": "until it does.",
-    "ver1": "Version one.",
-    "ver2": "Just the beginning.",
     "inst": "Institutional habits.\nWithout the stack.",
     "cta": "Get started",
     "tag": "Discipline over dopamine",
-    # scene end times — punchy EN VTT (~64s)
-    "t": [2.9, 4.5, 6.3, 9.7, 11.6, 17.1, 22.0, 26.7, 31.5, 34.5, 38.1, 42.7, 49.4, 54.0, 57.2, 61.7],
+    # scene end times — punchy EN VTT (~61s)
+    "t": [2.9, 4.5, 6.3, 9.7, 11.6, 17.1, 22.0, 26.7, 31.5, 34.5, 38.1, 42.7, 49.4, 54.0, 58.5],
 }
 
 DE = {
@@ -559,13 +557,11 @@ DE = {
     "edge1": "Dein Edge funktioniert.",
     "edge2": "Deine Disziplin nicht —",
     "edge3": "bis sie es tut.",
-    "ver1": "Version eins.",
-    "ver2": "Es ist erst der Anfang.",
     "inst": "Institutionelle Gewohnheiten.\nOhne den Stack.",
     "cta": "Jetzt starten",
     "tag": "Disziplin statt Dopamin",
-    # scene end times — calm DE Conrad VTT (~94s)
-    "t": [4.5, 6.7, 8.9, 13.5, 16.7, 24.7, 34.1, 42.2, 51.9, 55.9, 62.3, 68.6, 74.5, 80.0, 84.9, 91.1],
+    # scene end times — calm DE Conrad VTT (~89s)
+    "t": [4.5, 6.7, 8.9, 13.5, 16.7, 24.7, 34.1, 42.2, 51.9, 55.9, 62.3, 68.6, 74.5, 80.0, 86.2],
 }
 
 
@@ -671,10 +667,6 @@ def render_frame(i: int, lang: str = "en") -> Image.Image:
             draw_centered(draw, S["edge3"], H // 2 + 80, font("head_italic", 44), ACCENT)
 
     elif t < ends[14]:
-        draw_centered(draw, S["ver1"], H // 2 - 30, font("head", 64), TEXT)
-        draw_centered(draw, S["ver2"], H // 2 + 50, font("body", 28), GOLD_LIGHT)
-
-    elif t < ends[15]:
         # Keep lines within ~580px so 9:16 center-crop does not clip text.
         draw_centered(draw, S["inst"], H // 2, font("head", 40 if lang == "de" else 44), TEXT)
 
