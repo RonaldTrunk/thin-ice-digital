@@ -1,6 +1,6 @@
 # Thin Ice Digital
 
-Company site for [thinicedigital.com](https://thinicedigital.com) — Oxford software for traders and institutions.
+Company site for [thinicedigital.com](https://thinicedigital.com). Software for traders and institutions, registered in England and Wales.
 
 Two products:
 
@@ -24,4 +24,4 @@ This repo has the same workflow (`.github/workflows/pages.yml`). To publish:
 1. Push these files to `6tbwmzr522-crypto/thin-ice-digital` on `main`, **or**
 2. In that repo: Settings → Pages, then in **this** repo enable Pages (GitHub Actions) and move the `thinicedigital.com` custom domain across.
 
-Fonts are self-hosted (no Google Fonts request). Fill in the registered address and Companies House number on `impressum.html` once the filing is public.
+Fonts are self-hosted (no Google Fonts request). The registered office and Companies House number are on `impressum.html`.
