@@ -263,8 +263,8 @@ section{position:relative;z-index:2;background:var(--bg)}
   color:var(--gold-light);line-height:1.15;margin-bottom:0.5rem;
 }
 .stat-label{
-  font-size:9px;letter-spacing:0.35em;text-transform:uppercase;
-  color:rgba(245,242,236,0.4);
+  font-size:12px;letter-spacing:0.35em;text-transform:uppercase;
+  color:#B6BDC9;
 }
 .stat-sub{font-size:14px;color:#F5F2EC;margin-top:4px}
 .products-section{padding:6rem 2rem;border-top:1px solid rgba(201,169,110,0.08)}
@@ -400,8 +400,8 @@ footer{
 }
 .footer-links{display:flex;gap:1.5rem;flex-wrap:wrap}
 footer a{
-  font-size:11px;color:rgba(201,169,110,0.45);
-  text-decoration:none;letter-spacing:0.15em;transition:color 0.2s;
+  font-size:13px;color:#C9A96E;
+  text-decoration:none;letter-spacing:0.08em;transition:color 0.2s;
 }
 footer a:hover,footer a:focus-visible{color:var(--gold)}
 .page-main{
@@ -418,6 +418,7 @@ footer a:hover,footer a:focus-visible{color:var(--gold)}
   font-size:clamp(2.2rem,5vw,3.4rem);
   margin-bottom:0.75rem;
 }
+.page-main h1:has(+ .notice-line){margin-bottom:1.5rem}
 .page-lead{
   font-family:"Cormorant Garamond",serif;font-style:italic;
   color:var(--white-dim);font-size:1.2rem;margin-bottom:2.5rem;
@@ -431,7 +432,8 @@ footer a:hover,footer a:focus-visible{color:var(--gold)}
   color:var(--gold);margin:1.4rem 0 0.5rem;font-weight:500;
 }
 .legal p,.legal li{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:0.85rem}
-.legal p.notice-line{color:#F5F2EC;font-size:16px;line-height:1.7}
+.legal p.notice-line{color:#F5F2EC;font-size:16px;line-height:1.7;margin-bottom:0.4rem}
+.legal h1 + p.notice-line{margin-bottom:1.5rem}
 .legal p.notice-line a{color:#F5F2EC;text-decoration:underline;text-underline-offset:0.18em}
 .legal ul{padding-left:1.2rem;margin-bottom:1rem}
 .legal a{color:var(--gold);text-decoration:none}
