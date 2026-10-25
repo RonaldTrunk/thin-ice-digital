@@ -800,7 +800,7 @@
       "priv.li1": "Schriften liegen auf dieser Website. Wir laden keine Schriften von Google oder anderen Dritten.",
       "priv.li2": "Wir nutzen auf dieser Seite keine Analytics, Werbung oder Social Plugins.",
       "priv.li3": "Wir setzen keine Cookies zu Tracking oder Werbung.",
-      "priv.logs": "Unser Hostinganbieter und das CDN (derzeit GitHub Pages / Fastly) können technische Verbindungsdaten als Serverlogs verarbeiten, einschließlich der IP, der Zeit, der angeforderten URL und des User Agent. Diese Logs werden für die Auslieferung der Website benötigt und nach der eigenen Aufbewahrungsrichtlinie des Anbieters aufbewahrt. Wir greifen nicht darauf zu, um Sie zu identifizieren, und wir bewahren keine Kopien auf.",
+      "priv.logs": "Unser Hostinganbieter und das CDN (derzeit GitHub Pages / Fastly) können technische Verbindungsdaten als Serverlogs verarbeiten, einschließlich der IP-Adresse, der Uhrzeit, der angeforderten URL und des User Agent. Diese Logs werden für die Auslieferung der Website benötigt und nach der eigenen Aufbewahrungsrichtlinie des Anbieters aufbewahrt. Wir greifen nicht darauf zu, um Sie zu identifizieren, und wir bewahren keine Kopien auf.",
       "priv.emailH": "E-Mail",
       "priv.emailP": "Wenn Sie an",
       "priv.emailP2": " schreiben, verarbeiten wir den Inhalt der Nachricht und Ihre Adresse zur Antwort. Die Korrespondenz bewahren wir nur so lange auf, wie es für die Anfrage nötig oder gesetzlich vorgeschrieben ist.",
